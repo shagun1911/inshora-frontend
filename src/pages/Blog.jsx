@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Calendar, User, Tag, ArrowRight, Clock } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import Navigation from '../components/Navigation'
 
 export default function Blog() {
   const [blogs, setBlogs] = useState([])
@@ -46,8 +47,10 @@ export default function Blog() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Navigation />
+      
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#0B1F8F] to-[#2563EB] text-white py-16">
+      <div className="bg-gradient-to-r from-[#0B1F8F] to-[#2563EB] text-white py-16 pt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Inshora Blog</h1>
           <p className="text-xl text-blue-100 max-w-3xl">
@@ -85,7 +88,7 @@ export default function Blog() {
                   <div className="h-48 bg-gradient-to-br from-[#0B1F8F] to-[#2563EB] flex items-center justify-center overflow-hidden">
                     {blog.image_url ? (
                       <img
-                        src={blog.image_url}
+                        src={blog.image_url.startsWith('http') ? blog.image_url : `${backendUrl}${blog.image_url}`}
                         alt={blog.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />

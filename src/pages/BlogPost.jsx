@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Calendar, User, Tag, ArrowLeft, Clock, Share2, ArrowRight } from 'lucide-react'
+import Navigation from '../components/Navigation'
 
 export default function BlogPost() {
   const { id } = useParams()
@@ -80,11 +81,13 @@ export default function BlogPost() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Navigation />
+      
       {/* Header Image */}
       {blog.image_url && (
         <div className="h-64 md:h-96 bg-gradient-to-br from-[#0B1F8F] to-[#2563EB] relative overflow-hidden">
           <img
-            src={blog.image_url}
+            src={blog.image_url.startsWith('http') ? blog.image_url : `${backendUrl}${blog.image_url}`}
             alt={blog.title}
             className="w-full h-full object-cover"
           />
