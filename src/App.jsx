@@ -110,6 +110,26 @@ function LandingPage() {
     {
       question: 'How do you make money?',
       answer: 'We earn a commission from insurance companies when you purchase a policy through our platform, at no extra cost to you.'
+    },
+    {
+      question: 'How fast can I get a quote?',
+      answer: 'Most customers receive quote options in minutes once they complete their basic profile and coverage preferences.'
+    },
+    {
+      question: 'Can I switch providers mid-policy?',
+      answer: 'Yes. Our licensed agents can help you compare your current policy against available options and guide a smooth switch.'
+    },
+    {
+      question: 'Do you support bundle discounts?',
+      answer: 'Yes. We can compare bundled home and auto options to help you maximize eligible discounts and simplify policy management.'
+    },
+    {
+      question: 'Will this affect my credit score?',
+      answer: 'Standard quote comparisons typically use soft checks or rating factors that do not impact your credit score.'
+    },
+    {
+      question: 'Can I speak with a licensed agent?',
+      answer: 'Absolutely. You can call us directly or request a callback to review recommendations with a licensed Texas agent.'
     }
   ]
 
@@ -118,19 +138,19 @@ function LandingPage() {
       title: '10 Ways to Lower Your Car Insurance Premium',
       excerpt: 'Discover proven strategies to reduce your car insurance costs without sacrificing coverage.',
       date: 'April 15, 2026',
-      image: '🚗'
+      icon: Car
     },
     {
       title: 'Understanding Insurance Bundles',
       excerpt: 'Learn how bundling home and auto insurance can save you hundreds of dollars annually.',
       date: 'April 12, 2026',
-      image: '🏠'
+      icon: Home
     },
     {
       title: 'The Future of AI in Insurance',
       excerpt: 'Explore how artificial intelligence is revolutionizing the insurance industry.',
       date: 'April 10, 2026',
-      image: '🤖'
+      icon: Shield
     }
   ]
 
@@ -257,7 +277,7 @@ function LandingPage() {
               
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-6">
                 Protect What Matters Most with
-                <span className="block bg-gradient-to-r from-yellow-300 to-orange-400 bg-clip-text text-transparent">Inshora Group</span>
+                <span className="block text-white">Inshora Group</span>
               </h1>
               
               <p className="text-xl text-blue-100 mb-8 leading-relaxed">
@@ -348,7 +368,7 @@ function LandingPage() {
                     {/* Phone Screen Content - Scrollable */}
                     <div className="h-full overflow-y-auto p-4 pb-16">
                       <div className="text-center mb-4">
-                        <span className="text-xl font-bold bg-gradient-to-r from-[#0B1F8F] to-[#2563EB] bg-clip-text text-transparent">INSHORA</span>
+                        <span className="text-xl font-bold text-[#0B1F8F]">INSHORA</span>
                       </div>
                       <div className="text-center mb-4">
                         <span className="text-xs font-semibold text-gray-700">Your personalized quotes</span>
@@ -610,7 +630,7 @@ function LandingPage() {
               <p className="text-xl text-gray-600 mb-6 leading-relaxed">
                 Founded in 2013, Inshora Group is a Texas-based insurance brokerage dedicated to helping you protect what matters most. We compare quotes from 25+ A-rated carriers to find you the best coverage at the lowest price.
               </p>
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 mb-6">
+              <div className="bg-slate-50 rounded-2xl p-6 mb-6 border border-slate-200">
                 <h3 className="font-bold text-[#0B1F8F] mb-2">The Meaning of "Inshora"</h3>
                 <p className="text-gray-700">
                   Our name comes from the Hausa language, meaning <strong>Protection, Security, and Assurance</strong>. This reflects our commitment to providing comprehensive insurance coverage that gives you peace of mind.
@@ -621,11 +641,11 @@ function LandingPage() {
               </p>
             </div>
             <div className="grid grid-cols-2 gap-6">
-              <div className="bg-gradient-to-br from-[#0B1F8F] to-[#2563EB] rounded-2xl p-6 text-white">
+              <div className="bg-[#0B1F8F] rounded-2xl p-6 text-white">
                 <div className="text-4xl font-bold mb-2">25+</div>
                 <div className="text-blue-100">A-Rated Carriers</div>
               </div>
-              <div className="bg-gradient-to-br from-[#FF5A1F] to-[#FF6B35] rounded-2xl p-6 text-white">
+              <div className="bg-[#1E3A8A] rounded-2xl p-6 text-white">
                 <div className="text-4xl font-bold mb-2">2013</div>
                 <div className="text-orange-100">Founded</div>
               </div>
@@ -643,7 +663,7 @@ function LandingPage() {
       </section>
 
       {/* Services Section */}
-      <section id="services" className="py-24 bg-gradient-to-b from-white to-gray-50">
+      <section id="services" className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-full mb-4">
@@ -660,10 +680,10 @@ function LandingPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Auto Insurance */}
-            <div className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="group bg-white rounded-3xl p-8 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 relative overflow-hidden">
+              <div className="absolute inset-0 bg-slate-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative z-10">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <div className="w-16 h-16 bg-[#0B1F8F] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300 shadow-md">
                   <Car className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Auto Insurance</h3>
@@ -677,10 +697,10 @@ function LandingPage() {
             </div>
 
             {/* Home Insurance */}
-            <div className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="group bg-white rounded-3xl p-8 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 relative overflow-hidden">
+              <div className="absolute inset-0 bg-slate-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative z-10">
-                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <div className="w-16 h-16 bg-[#0B1F8F] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300 shadow-md">
                   <Home className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Home Insurance</h3>
@@ -694,10 +714,10 @@ function LandingPage() {
             </div>
 
             {/* Renters Insurance */}
-            <div className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="group bg-white rounded-3xl p-8 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 relative overflow-hidden">
+              <div className="absolute inset-0 bg-slate-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative z-10">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <div className="w-16 h-16 bg-[#0B1F8F] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300 shadow-md">
                   <Home className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Renters Insurance</h3>
@@ -711,10 +731,10 @@ function LandingPage() {
             </div>
 
             {/* Flood Insurance */}
-            <div className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-cyan-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="group bg-white rounded-3xl p-8 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 relative overflow-hidden">
+              <div className="absolute inset-0 bg-slate-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative z-10">
-                <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <div className="w-16 h-16 bg-[#0B1F8F] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300 shadow-md">
                   <Shield className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Flood Insurance</h3>
@@ -728,10 +748,10 @@ function LandingPage() {
             </div>
 
             {/* Life Insurance */}
-            <div className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-pink-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="group bg-white rounded-3xl p-8 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 relative overflow-hidden">
+              <div className="absolute inset-0 bg-slate-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative z-10">
-                <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <div className="w-16 h-16 bg-[#0B1F8F] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300 shadow-md">
                   <Shield className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Life Insurance</h3>
@@ -745,10 +765,10 @@ function LandingPage() {
             </div>
 
             {/* Business Insurance */}
-            <div className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-orange-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="group bg-white rounded-3xl p-8 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 relative overflow-hidden">
+              <div className="absolute inset-0 bg-slate-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative z-10">
-                <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <div className="w-16 h-16 bg-[#0B1F8F] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300 shadow-md">
                   <Shield className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Business Insurance</h3>
@@ -762,10 +782,10 @@ function LandingPage() {
             </div>
 
             {/* Boat Insurance */}
-            <div className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-teal-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="group bg-white rounded-3xl p-8 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 relative overflow-hidden">
+              <div className="absolute inset-0 bg-slate-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative z-10">
-                <div className="w-16 h-16 bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <div className="w-16 h-16 bg-[#0B1F8F] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300 shadow-md">
                   <Shield className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Boat Insurance</h3>
@@ -779,10 +799,10 @@ function LandingPage() {
             </div>
 
             {/* RV Insurance */}
-            <div className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-indigo-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="group bg-white rounded-3xl p-8 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 relative overflow-hidden">
+              <div className="absolute inset-0 bg-slate-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative z-10">
-                <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <div className="w-16 h-16 bg-[#0B1F8F] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300 shadow-md">
                   <Car className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">RV Insurance</h3>
@@ -796,10 +816,10 @@ function LandingPage() {
             </div>
 
             {/* Motorcycle Insurance */}
-            <div className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="group bg-white rounded-3xl p-8 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 relative overflow-hidden">
+              <div className="absolute inset-0 bg-slate-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative z-10">
-                <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <div className="w-16 h-16 bg-[#0B1F8F] rounded-2xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300 shadow-md">
                   <Car className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Motorcycle Insurance</h3>
@@ -982,7 +1002,7 @@ function LandingPage() {
       </section>
 
       {/* Expert Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto">
             <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
@@ -1188,9 +1208,9 @@ function LandingPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Blog Post 1 */}
-            <article className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 overflow-hidden">
-              <div className="h-48 bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-                <span className="text-6xl">🚗</span>
+            <article className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 overflow-hidden">
+              <div className="h-48 bg-[#0B1F8F] flex items-center justify-center">
+                <Car className="w-16 h-16 text-white" />
               </div>
               <div className="p-6">
                 <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
@@ -1204,16 +1224,16 @@ function LandingPage() {
                 <p className="text-gray-600 mb-4">
                   Discover proven strategies to reduce your auto insurance costs while maintaining adequate coverage. Learn about discounts, safe driving programs, and more.
                 </p>
-                <a href="#" className="text-[#0B1F8F] font-semibold hover:text-[#2563EB] transition flex items-center gap-2">
+                <Link to="/blog" className="text-[#0B1F8F] font-semibold hover:text-[#1E3A8A] transition flex items-center gap-2">
                   Read More <ArrowRight className="w-4 h-4" />
-                </a>
+                </Link>
               </div>
             </article>
 
             {/* Blog Post 2 */}
-            <article className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 overflow-hidden">
-              <div className="h-48 bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
-                <span className="text-6xl">🏠</span>
+            <article className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 overflow-hidden">
+              <div className="h-48 bg-[#0B1F8F] flex items-center justify-center">
+                <Home className="w-16 h-16 text-white" />
               </div>
               <div className="p-6">
                 <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
@@ -1227,16 +1247,16 @@ function LandingPage() {
                 <p className="text-gray-600 mb-4">
                   Texas weather can be unpredictable. Learn about the essential coverage types every Texas homeowner should have to protect their investment.
                 </p>
-                <a href="#" className="text-[#0B1F8F] font-semibold hover:text-[#2563EB] transition flex items-center gap-2">
+                <Link to="/blog" className="text-[#0B1F8F] font-semibold hover:text-[#1E3A8A] transition flex items-center gap-2">
                   Read More <ArrowRight className="w-4 h-4" />
-                </a>
+                </Link>
               </div>
             </article>
 
             {/* Blog Post 3 */}
-            <article className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 overflow-hidden">
-              <div className="h-48 bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center">
-                <span className="text-6xl">🛡️</span>
+            <article className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 overflow-hidden">
+              <div className="h-48 bg-[#0B1F8F] flex items-center justify-center">
+                <Shield className="w-16 h-16 text-white" />
               </div>
               <div className="p-6">
                 <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
@@ -1250,16 +1270,16 @@ function LandingPage() {
                 <p className="text-gray-600 mb-4">
                   Standard homeowners insurance doesn't cover flood damage. Understand why flood insurance is crucial in Texas and how to get affordable coverage.
                 </p>
-                <a href="#" className="text-[#0B1F8F] font-semibold hover:text-[#2563EB] transition flex items-center gap-2">
+                <Link to="/blog" className="text-[#0B1F8F] font-semibold hover:text-[#1E3A8A] transition flex items-center gap-2">
                   Read More <ArrowRight className="w-4 h-4" />
-                </a>
+                </Link>
               </div>
             </article>
 
             {/* Blog Post 4 */}
-            <article className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 overflow-hidden">
-              <div className="h-48 bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
-                <span className="text-6xl">💼</span>
+            <article className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 overflow-hidden">
+              <div className="h-48 bg-[#0B1F8F] flex items-center justify-center">
+                <FileText className="w-16 h-16 text-white" />
               </div>
               <div className="p-6">
                 <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
@@ -1273,16 +1293,16 @@ function LandingPage() {
                 <p className="text-gray-600 mb-4">
                   Protect your Texas business with the right insurance coverage. Learn about general liability, workers' comp, and other essential policies.
                 </p>
-                <a href="#" className="text-[#0B1F8F] font-semibold hover:text-[#2563EB] transition flex items-center gap-2">
+                <Link to="/blog" className="text-[#0B1F8F] font-semibold hover:text-[#1E3A8A] transition flex items-center gap-2">
                   Read More <ArrowRight className="w-4 h-4" />
-                </a>
+                </Link>
               </div>
             </article>
 
             {/* Blog Post 5 */}
-            <article className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 overflow-hidden">
-              <div className="h-48 bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center">
-                <span className="text-6xl">❤️</span>
+            <article className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 overflow-hidden">
+              <div className="h-48 bg-[#0B1F8F] flex items-center justify-center">
+                <User className="w-16 h-16 text-white" />
               </div>
               <div className="p-6">
                 <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
@@ -1296,16 +1316,16 @@ function LandingPage() {
                 <p className="text-gray-600 mb-4">
                   Confused about life insurance options? We break down the differences between term life, whole life, and universal life insurance to help you decide.
                 </p>
-                <a href="#" className="text-[#0B1F8F] font-semibold hover:text-[#2563EB] transition flex items-center gap-2">
+                <Link to="/blog" className="text-[#0B1F8F] font-semibold hover:text-[#1E3A8A] transition flex items-center gap-2">
                   Read More <ArrowRight className="w-4 h-4" />
-                </a>
+                </Link>
               </div>
             </article>
 
             {/* Blog Post 6 */}
-            <article className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 overflow-hidden">
-              <div className="h-48 bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
-                <span className="text-6xl">💰</span>
+            <article className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 overflow-hidden">
+              <div className="h-48 bg-[#0B1F8F] flex items-center justify-center">
+                <TrendingUp className="w-16 h-16 text-white" />
               </div>
               <div className="p-6">
                 <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
@@ -1319,9 +1339,9 @@ function LandingPage() {
                 <p className="text-gray-600 mb-4">
                   Learn insider tips to reduce your insurance premiums while maintaining comprehensive coverage. Bundle discounts, safe driving rewards, and more.
                 </p>
-                <a href="#" className="text-[#0B1F8F] font-semibold hover:text-[#2563EB] transition flex items-center gap-2">
+                <Link to="/blog" className="text-[#0B1F8F] font-semibold hover:text-[#1E3A8A] transition flex items-center gap-2">
                   Read More <ArrowRight className="w-4 h-4" />
-                </a>
+                </Link>
               </div>
             </article>
           </div>
@@ -1356,42 +1376,6 @@ function LandingPage() {
                     {faq.answer}
                   </div>
                 )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Blog Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Latest Articles
-            </h2>
-            <p className="text-xl text-gray-600">
-              Stay informed with our expert insights
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {blogs.map((blog, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition transform hover:-translate-y-2 border border-gray-100"
-              >
-                <div className="h-48 bg-gradient-to-br from-primary to-primary-light flex items-center justify-center text-6xl">
-                  {blog.image}
-                </div>
-                <div className="p-6">
-                  <div className="text-sm text-gray-500 mb-2">{blog.date}</div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">{blog.title}</h3>
-                  <p className="text-gray-600 mb-4">{blog.excerpt}</p>
-                  <a href="#" className="text-primary font-semibold hover:text-primary-dark inline-flex items-center">
-                    Read More
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </a>
-                </div>
               </div>
             ))}
           </div>
@@ -1439,7 +1423,7 @@ function LandingPage() {
               </div>
             </div>
             
-            {/* About */}
+            {/* About  */}
             <div>
               <h4 className="font-semibold mb-4">About</h4>
               <ul className="space-y-2 text-gray-400">
@@ -1449,7 +1433,7 @@ function LandingPage() {
               </ul>
             </div>
             
-            {/* Insurance Services */}
+            {/* Insurance  Services */}
             <div>
               <h4 className="font-semibold mb-4">Insurance Services</h4>
               <ul className="space-y-2 text-gray-400">
@@ -1478,7 +1462,7 @@ function LandingPage() {
             </div>
           </div>
           
-          {/* Site Map & Copyright */}
+          {/* Site Map & Copyright  */}
           <div className="border-t border-gray-800 pt-8">
             <div className="grid md:grid-cols-2 gap-8">
               <div>
@@ -1502,7 +1486,7 @@ function LandingPage() {
         </div>
       </footer>
 
-      {/* Voice Agent Modal */}
+      {/* Voice Agent Modal  */}
       <VoiceAgent isOpen={voiceAgentOpen} onClose={() => setVoiceAgentOpen(false)} />
       
       {/* Smart Chatbot */}

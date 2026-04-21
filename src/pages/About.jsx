@@ -34,11 +34,11 @@ export default function About() {
             </p>
           </div>
           <div className="grid grid-cols-2 gap-6">
-            <div className="bg-gradient-to-br from-[#0B1F8F] to-[#2563EB] rounded-2xl p-6 text-white">
+            <div className="bg-[#0B1F8F] rounded-2xl p-6 text-white">
               <div className="text-4xl font-bold mb-2">25+</div>
               <div className="text-blue-100">A-Rated Carriers</div>
             </div>
-            <div className="bg-gradient-to-br from-[#FF5A1F] to-[#FF6B35] rounded-2xl p-6 text-white">
+            <div className="bg-[#1E3A8A] rounded-2xl p-6 text-white">
               <div className="text-4xl font-bold mb-2">2013</div>
               <div className="text-orange-100">Founded</div>
             </div>
@@ -77,7 +77,7 @@ export default function About() {
               </p>
             </div>
             <div className="bg-white rounded-2xl p-8 shadow-lg">
-              <div className="w-12 h-12 bg-[#FF5A1F] rounded-xl flex items-center justify-center mb-6">
+              <div className="w-12 h-12 bg-[#0B1F8F] rounded-xl flex items-center justify-center mb-6">
                 <CheckCircle className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">Licensed Experts</h3>
@@ -86,7 +86,7 @@ export default function About() {
               </p>
             </div>
             <div className="bg-white rounded-2xl p-8 shadow-lg">
-              <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center mb-6">
+              <div className="w-12 h-12 bg-[#0B1F8F] rounded-xl flex items-center justify-center mb-6">
                 <Phone className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">Personalized Service</h3>

@@ -94,7 +94,7 @@ export default function Blog() {
                       />
                     ) : (
                       <div className="text-white text-center p-4">
-                        <div className="text-4xl mb-2">📝</div>
+                        <Tag className="w-10 h-10 mx-auto mb-2" />
                         <p className="text-sm">Inshora Insurance</p>
                       </div>
                     )}

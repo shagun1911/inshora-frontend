@@ -68,12 +68,12 @@ export default function Contact() {
 
               <div className="bg-white rounded-2xl p-6 shadow-lg">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-[#FF5A1F] rounded-xl flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 bg-[#0B1F8F] rounded-xl flex items-center justify-center flex-shrink-0">
                     <Mail className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h3 className="font-bold text-gray-900 mb-1">Email</h3>
-                    <a href="mailto:support@inshoragroup.com" className="text-[#FF5A1F] font-semibold hover:underline">
+                    <a href="mailto:support@inshoragroup.com" className="text-[#0B1F8F] font-semibold hover:underline">
                       support@inshoragroup.com
                     </a>
                     <p className="text-sm text-gray-500 mt-1">We respond within 24 hours</p>
@@ -83,7 +83,7 @@ export default function Contact() {
 
               <div className="bg-white rounded-2xl p-6 shadow-lg">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 bg-[#0B1F8F] rounded-xl flex items-center justify-center flex-shrink-0">
                     <MapPin className="w-6 h-6 text-white" />
                   </div>
                   <div>
@@ -98,7 +98,7 @@ export default function Contact() {
 
               <div className="bg-white rounded-2xl p-6 shadow-lg">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 bg-[#0B1F8F] rounded-xl flex items-center justify-center flex-shrink-0">
                     <Clock className="w-6 h-6 text-white" />
                   </div>
                   <div>

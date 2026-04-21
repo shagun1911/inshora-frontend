@@ -10,6 +10,7 @@ export default function VoiceAgent({ isOpen, onClose }) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
   const audioLevelInterval = useRef(null)
+  const remoteAudioContainerRef = useRef(null)
 
   const connectToRoom = async () => {
     try {
@@ -43,12 +44,16 @@ export default function VoiceAgent({ isOpen, onClose }) {
       
       newRoom.on(RoomEvent.TrackSubscribed, (track, publication, participant) => {
         if (track.kind === Track.Kind.Audio) {
-          track.attach()
+          const element = track.attach()
+          element.autoplay = true
+          element.style.display = 'none'
+          remoteAudioContainerRef.current?.appendChild(element)
         }
       })
 
       newRoom.on(RoomEvent.TrackUnsubscribed, (track) => {
-        track.detach()
+        const elements = track.detach()
+        elements.forEach((element) => element.remove())
       })
 
       newRoom.on(RoomEvent.ParticipantConnected, () => {
@@ -67,13 +72,20 @@ export default function VoiceAgent({ isOpen, onClose }) {
       
       setRoom(newRoom)
       setIsConnected(true)
+      setIsLoading(false)
 
       // Start monitoring audio levels
       startAudioLevelMonitoring(newRoom)
 
     } catch (err) {
       console.error('Error connecting to room:', err)
-      setError(err.message)
+      if (err?.name === 'NotAllowedError') {
+        setError('Microphone permission was denied. Please allow mic access in your browser and try again.')
+      } else if (err?.name === 'NotFoundError') {
+        setError('No microphone device was found. Please connect a mic and try again.')
+      } else {
+        setError(err.message || 'Failed to connect to voice assistant.')
+      }
       setIsLoading(false)
     }
   }
@@ -81,8 +93,12 @@ export default function VoiceAgent({ isOpen, onClose }) {
   const disconnectFromRoom = async () => {
     if (room) {
       await room.disconnect()
+      if (remoteAudioContainerRef.current) {
+        remoteAudioContainerRef.current.innerHTML = ''
+      }
       setRoom(null)
       setIsConnected(false)
+      setIsLoading(false)
       stopAudioLevelMonitoring()
     }
   }
@@ -116,17 +132,10 @@ export default function VoiceAgent({ isOpen, onClose }) {
     setAudioLevel(0)
   }
 
-  // Connect when component opens
+  // Only cleanup on close; connect happens on explicit button click
   useEffect(() => {
-    if (isOpen) {
-      connectToRoom()
-    }
-    return () => {
-      if (room) {
-        disconnectFromRoom()
-      }
-    }
-  }, [isOpen])
+    if (!isOpen && room) disconnectFromRoom()
+  }, [isOpen, room])
 
   // Cleanup on unmount
   useEffect(() => {
@@ -237,6 +246,7 @@ export default function VoiceAgent({ isOpen, onClose }) {
           >
             Close
           </button>
+          <div ref={remoteAudioContainerRef} />
         </div>
       </div>
     </div>

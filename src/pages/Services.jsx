@@ -9,72 +9,72 @@ export default function Services() {
       name: 'Auto Insurance',
       description: 'Protect your vehicle with comprehensive auto insurance. We compare rates from top carriers to find you the best coverage at the lowest price.',
       features: ['Liability Coverage', 'Collision Coverage', 'Comprehensive Coverage', 'Uninsured Motorist Protection'],
-      color: 'from-blue-500 to-blue-600',
-      bgGradient: 'from-blue-500/5 to-blue-600/5'
+      color: 'bg-[#0B1F8F]',
+      bgGradient: 'bg-slate-50'
     },
     {
       icon: Home,
       name: 'Home Insurance',
       description: 'Protect your home and belongings with comprehensive home insurance. We help you find the right coverage for your property.',
       features: ['Dwelling Coverage', 'Personal Property', 'Liability Protection', 'Additional Living Expenses'],
-      color: 'from-green-500 to-green-600',
-      bgGradient: 'from-green-500/5 to-green-600/5'
+      color: 'bg-[#0B1F8F]',
+      bgGradient: 'bg-slate-50'
     },
     {
       icon: Home,
       name: 'Renters Insurance',
       description: 'Protect your belongings even if you don\'t own your home. Affordable renters insurance for tenants.',
       features: ['Personal Property', 'Liability Coverage', 'Additional Living Expenses', 'Medical Payments'],
-      color: 'from-purple-500 to-purple-600',
-      bgGradient: 'from-purple-500/5 to-purple-600/5'
+      color: 'bg-[#0B1F8F]',
+      bgGradient: 'bg-slate-50'
     },
     {
       icon: Shield,
       name: 'Flood Insurance',
       description: 'Protect your home from flood damage with specialized flood insurance coverage.',
       features: ['Building Coverage', 'Contents Coverage', 'Preferred Risk Policies', 'Standard Flood Policies'],
-      color: 'from-cyan-500 to-cyan-600',
-      bgGradient: 'from-cyan-500/5 to-cyan-600/5'
+      color: 'bg-[#0B1F8F]',
+      bgGradient: 'bg-slate-50'
     },
     {
       icon: PawPrint,
       name: 'Pet Insurance',
       description: 'Keep your furry friends healthy with comprehensive pet insurance plans.',
       features: ['Accident Coverage', 'Illness Coverage', 'Hereditary Conditions', 'Wellness Care'],
-      color: 'from-pink-500 to-pink-600',
-      bgGradient: 'from-pink-500/5 to-pink-600/5'
+      color: 'bg-[#0B1F8F]',
+      bgGradient: 'bg-slate-50'
     },
     {
       icon: Briefcase,
       name: 'Business Insurance',
       description: 'Protect your business with comprehensive commercial insurance solutions.',
       features: ['General Liability', 'Property Insurance', 'Workers Compensation', 'Professional Liability'],
-      color: 'from-orange-500 to-orange-600',
-      bgGradient: 'from-orange-500/5 to-orange-600/5'
+      color: 'bg-[#0B1F8F]',
+      bgGradient: 'bg-slate-50'
     },
     {
       icon: Umbrella,
       name: 'Umbrella Insurance',
       description: 'Extra liability protection beyond your standard insurance policies.',
       features: ['Extended Liability', 'Legal Defense Costs', 'Personal Injury Coverage', 'Worldwide Coverage'],
-      color: 'from-indigo-500 to-indigo-600',
-      bgGradient: 'from-indigo-500/5 to-indigo-600/5'
+      color: 'bg-[#0B1F8F]',
+      bgGradient: 'bg-slate-50'
     },
     {
       icon: Shield,
       name: 'Life Insurance',
       description: 'Secure your family\'s financial future with life insurance protection.',
       features: ['Term Life', 'Whole Life', 'Universal Life', 'Final Expense'],
-      color: 'from-red-500 to-red-600',
-      bgGradient: 'from-red-500/5 to-red-600/5'
+      color: 'bg-[#0B1F8F]',
+      bgGradient: 'bg-slate-50'
     },
     {
       icon: Car,
       name: 'Motorcycle Insurance',
       description: 'Ride with confidence with specialized motorcycle insurance coverage.',
       features: ['Bodily Injury', 'Property Damage', 'Collision Coverage', 'Comprehensive Coverage'],
-      color: 'from-yellow-500 to-yellow-600',
-      bgGradient: 'from-yellow-500/5 to-yellow-600/5'
+      color: 'bg-[#0B1F8F]',
+      bgGradient: 'bg-slate-50'
     }
   ]
 
@@ -98,11 +98,11 @@ export default function Services() {
           {services.map((service, index) => (
             <div
               key={index}
-              className="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 relative overflow-hidden"
+              className="group bg-white rounded-3xl p-8 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 relative overflow-hidden"
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${service.bgGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}></div>
+              <div className={`absolute inset-0 ${service.bgGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}></div>
               <div className="relative z-10">
-                <div className={`w-16 h-16 bg-gradient-to-br ${service.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                <div className={`w-16 h-16 ${service.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300 shadow-md`}>
                   <service.icon className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">{service.name}</h3>

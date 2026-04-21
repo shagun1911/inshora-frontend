@@ -98,11 +98,11 @@ export default function Locations() {
                   <p className="text-sm text-gray-600">{location.address}</p>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Clock className="w-5 h-5 text-[#FF5A1F] mt-0.5 flex-shrink-0" />
+                  <Clock className="w-5 h-5 text-[#0B1F8F] mt-0.5 flex-shrink-0" />
                   <p className="text-sm text-gray-600">{location.hours}</p>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Phone className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                  <Phone className="w-5 h-5 text-[#0B1F8F] mt-0.5 flex-shrink-0" />
                   <p className="text-sm text-gray-600 font-semibold">{location.phone}</p>
                 </div>
               </div>
@@ -125,19 +125,19 @@ export default function Locations() {
               </p>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-center gap-3 text-gray-700">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-[#0B1F8F] rounded-full"></div>
                   Licensed in all Texas counties
                 </li>
                 <li className="flex items-center gap-3 text-gray-700">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-[#0B1F8F] rounded-full"></div>
                   Online quotes available statewide
                 </li>
                 <li className="flex items-center gap-3 text-gray-700">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-[#0B1F8F] rounded-full"></div>
                   Phone support available 24/7
                 </li>
                 <li className="flex items-center gap-3 text-gray-700">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-[#0B1F8F] rounded-full"></div>
                   Local agents in your area
                 </li>
               </ul>
