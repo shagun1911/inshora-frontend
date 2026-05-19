@@ -11,6 +11,32 @@ export default function VoiceAgent({ isOpen, onClose }) {
   const [error, setError] = useState(null)
   const audioLevelInterval = useRef(null)
   const remoteAudioContainerRef = useRef(null)
+  const modalRef = useRef(null)
+
+  useEffect(() => {
+    if (!isOpen || !modalRef.current) return
+    const root = modalRef.current
+    const focusable = root.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    )
+    const items = Array.from(focusable)
+    items[0]?.focus()
+
+    const onKeyDown = (e) => {
+      if (e.key !== 'Tab' || items.length === 0) return
+      const first = items[0]
+      const last = items[items.length - 1]
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [isOpen, isConnected, isLoading])
 
   const connectToRoom = async () => {
     try {
@@ -147,14 +173,20 @@ export default function VoiceAgent({ isOpen, onClose }) {
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" role="presentation">
+      <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="voice-agent-title"
+        className="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl"
+      >
         <div className="text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
             <div className="w-12 h-12 bg-gradient-to-br from-[#0B1F8F] to-[#2563EB] rounded-full flex items-center justify-center">
               <Sparkles className="w-6 h-6 text-white" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900">Sarah - AI Voice Agent</h2>
+            <h2 id="voice-agent-title" className="text-2xl font-bold text-gray-900">Sarah - AI Voice Agent</h2>
           </div>
           
           <p className="text-gray-600 mb-2">

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link, useNavigate } from 'react-router-dom'
 import { 
   Star, Phone, Menu, X, ChevronDown, Shield, 
   TrendingUp, Users, Award, Clock, CheckCircle,
@@ -14,8 +14,16 @@ import About from './pages/About'
 import Services from './pages/Services'
 import Locations from './pages/Locations'
 import Contact from './pages/Contact'
+import Terms from './pages/Terms'
+import Privacy from './pages/Privacy'
+import Accessibility from './pages/Accessibility'
+import NotFound from './pages/NotFound'
+import Footer from './components/Footer'
+import HomepageBlogSection from './components/HomepageBlogSection'
+import { submitLead, isValidZip } from './utils/submitLead'
 
 function LandingPage() {
+  const navigate = useNavigate()
   const [isListening, setIsListening] = useState(false)
   const [activeTab, setActiveTab] = useState('Auto')
   const [zipCode, setZipCode] = useState('')
@@ -24,6 +32,12 @@ function LandingPage() {
   const [voiceAgentOpen, setVoiceAgentOpen] = useState(false)
   const [zipError, setZipError] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [quoteForm, setQuoteForm] = useState({
+    name: '', email: '', phone: '', insurance_type: '', zip: '', message: '',
+  })
+  const [quoteSubmitting, setQuoteSubmitting] = useState(false)
+  const [quoteError, setQuoteError] = useState('')
+  const [quoteSuccess, setQuoteSuccess] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -133,26 +147,33 @@ function LandingPage() {
     }
   ]
 
-  const blogs = [
-    {
-      title: '10 Ways to Lower Your Car Insurance Premium',
-      excerpt: 'Discover proven strategies to reduce your car insurance costs without sacrificing coverage.',
-      date: 'April 15, 2026',
-      icon: Car
-    },
-    {
-      title: 'Understanding Insurance Bundles',
-      excerpt: 'Learn how bundling home and auto insurance can save you hundreds of dollars annually.',
-      date: 'April 12, 2026',
-      icon: Home
-    },
-    {
-      title: 'The Future of AI in Insurance',
-      excerpt: 'Explore how artificial intelligence is revolutionizing the insurance industry.',
-      date: 'April 10, 2026',
-      icon: Shield
+  const handleHeroQuote = () => {
+    if (!isValidZip(zipCode)) {
+      setZipError(true)
+      return
     }
-  ]
+    const typeMap = { Auto: 'auto', Home: 'home', Renters: 'renters', Pet: 'pet', Bundle: 'bundle' }
+    navigate(`/contact?zip=${encodeURIComponent(zipCode)}&type=${typeMap[activeTab] || 'auto'}`)
+  }
+
+  const handleQuoteSubmit = async (e) => {
+    e.preventDefault()
+    setQuoteError('')
+    setQuoteSubmitting(true)
+    try {
+      await submitLead({
+        ...quoteForm,
+        source: 'homepage_quote',
+        insurance_type: quoteForm.insurance_type || activeTab,
+      })
+      setQuoteSuccess(true)
+      setQuoteForm({ name: '', email: '', phone: '', insurance_type: '', zip: '', message: '' })
+    } catch (err) {
+      setQuoteError(err.message)
+    } finally {
+      setQuoteSubmitting(false)
+    }
+  }
 
   const toggleVoiceAgent = () => {
     setVoiceAgentOpen(!voiceAgentOpen)
@@ -325,7 +346,11 @@ function LandingPage() {
                       <p className="absolute -bottom-6 left-0 text-red-300 text-sm">Please enter a valid ZIP code</p>
                     )}
                   </div>
-                  <button className="bg-gradient-to-r from-[#FF5A1F] to-[#FF6B35] hover:from-[#E54A15] hover:to-[#F05A2A] text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl flex items-center justify-center whitespace-nowrap">
+                  <button
+                    type="button"
+                    onClick={handleHeroQuote}
+                    className="bg-gradient-to-r from-[#FF5A1F] to-[#FF6B35] hover:from-[#E54A15] hover:to-[#F05A2A] text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl flex items-center justify-center whitespace-nowrap"
+                  >
                     <span>Get Free Quote</span>
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </button>
@@ -966,7 +991,7 @@ function LandingPage() {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 bg-white">
+      <section id="how-it-works" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -983,7 +1008,11 @@ function LandingPage() {
               <p className="text-gray-600 mb-6">
                 Use our online comparison tool to find quotes at your own pace, anytime.
               </p>
-              <button className="bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-xl font-semibold transition transform hover:scale-105">
+              <button
+                type="button"
+                onClick={handleHeroQuote}
+                className="bg-[#0B1F8F] hover:bg-[#1C2ED6] text-white px-6 py-3 rounded-xl font-semibold transition transform hover:scale-105"
+              >
                 Compare Quotes Online
               </button>
             </div>
@@ -993,7 +1022,11 @@ function LandingPage() {
               <p className="text-gray-600 mb-6">
                 Connect with our licensed agents who can guide you through the process.
               </p>
-              <button className="bg-accent hover:bg-accent-hover text-white px-6 py-3 rounded-xl font-semibold transition transform hover:scale-105">
+              <button
+                type="button"
+                onClick={() => setVoiceAgentOpen(true)}
+                className="bg-[#0B1F8F] hover:bg-[#1C2ED6] text-white px-6 py-3 rounded-xl font-semibold transition transform hover:scale-105"
+              >
                 Connect With an Expert
               </button>
             </div>
@@ -1072,11 +1105,11 @@ function LandingPage() {
 
             {/* Email */}
             <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-              <div className="w-14 h-14 bg-gradient-to-br from-[#FF5A1F] to-[#FF6B35] rounded-2xl flex items-center justify-center mb-6">
+              <div className="w-14 h-14 bg-gradient-to-br from-[#0B1F8F] to-[#2563EB] rounded-2xl flex items-center justify-center mb-6">
                 <FileText className="w-7 h-7 text-white" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Email Us</h3>
-              <a href="mailto:support@inshoragroup.com" className="text-2xl font-bold text-[#FF5A1F] hover:text-[#FF6B35] transition">
+              <a href="mailto:support@inshoragroup.com" className="text-2xl font-bold text-[#0B1F8F] hover:text-[#2563EB] transition">
                 support@inshoragroup.com
               </a>
               <p className="text-gray-600 mt-2">We respond within 24 hours</p>
@@ -1084,7 +1117,7 @@ function LandingPage() {
 
             {/* Location */}
             <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-              <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mb-6">
+              <div className="w-14 h-14 bg-gradient-to-br from-[#0B1F8F] to-[#2563EB] rounded-2xl flex items-center justify-center mb-6">
                 <Shield className="w-7 h-7 text-white" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Visit Us</h3>
@@ -1098,22 +1131,29 @@ function LandingPage() {
           {/* Contact Form */}
           <div className="bg-white rounded-3xl p-8 md:p-12 shadow-lg border border-gray-100">
             <h3 className="text-2xl font-bold text-gray-900 mb-6">Request a Free Quote</h3>
-            <form className="grid md:grid-cols-2 gap-6">
+            {quoteSuccess ? (
+              <div className="rounded-xl bg-green-50 border border-green-200 p-6 text-center" role="status" aria-live="polite">
+                <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-3" />
+                <p className="font-semibold text-gray-900">Thank you! We will contact you shortly.</p>
+              </div>
+            ) : (
+            <form onSubmit={handleQuoteSubmit} className="grid md:grid-cols-2 gap-6">
+              <input type="text" name="website" className="hidden" tabIndex={-1} autoComplete="off" aria-hidden />
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
-                <input type="text" required className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0B1F8F] focus:border-transparent" placeholder="John Doe" />
+                <label htmlFor="quote-name" className="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+                <input id="quote-name" name="name" type="text" required value={quoteForm.name} onChange={(e) => setQuoteForm({ ...quoteForm, name: e.target.value })} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0B1F8F] focus:border-transparent" placeholder="John Doe" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
-                <input type="tel" required className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0B1F8F] focus:border-transparent" placeholder="(713) 555-0123" />
+                <label htmlFor="quote-phone" className="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
+                <input id="quote-phone" name="phone" type="tel" required value={quoteForm.phone} onChange={(e) => setQuoteForm({ ...quoteForm, phone: e.target.value })} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0B1F8F] focus:border-transparent" placeholder="(713) 555-0123" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
-                <input type="email" required className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0B1F8F] focus:border-transparent" placeholder="john@example.com" />
+                <label htmlFor="quote-email" className="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
+                <input id="quote-email" name="email" type="email" required value={quoteForm.email} onChange={(e) => setQuoteForm({ ...quoteForm, email: e.target.value })} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0B1F8F] focus:border-transparent" placeholder="john@example.com" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Insurance Type *</label>
-                <select required className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0B1F8F] focus:border-transparent">
+                <label htmlFor="quote-type" className="block text-sm font-medium text-gray-700 mb-2">Insurance Type *</label>
+                <select id="quote-type" name="insurance_type" required value={quoteForm.insurance_type} onChange={(e) => setQuoteForm({ ...quoteForm, insurance_type: e.target.value })} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0B1F8F] focus:border-transparent">
                   <option value="">Select insurance type</option>
                   <option value="auto">Auto Insurance</option>
                   <option value="home">Home Insurance</option>
@@ -1125,19 +1165,23 @@ function LandingPage() {
                 </select>
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">ZIP Code *</label>
-                <input type="text" required className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0B1F8F] focus:border-transparent" placeholder="77478" />
+                <label htmlFor="quote-zip" className="block text-sm font-medium text-gray-700 mb-2">ZIP Code *</label>
+                <input id="quote-zip" name="zip" type="text" required value={quoteForm.zip || zipCode} onChange={(e) => setQuoteForm({ ...quoteForm, zip: e.target.value })} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0B1F8F] focus:border-transparent" placeholder="77478" maxLength={5} />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Message</label>
-                <textarea rows="4" className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0B1F8F] focus:border-transparent" placeholder="Tell us about your insurance needs..."></textarea>
+                <label htmlFor="quote-message" className="block text-sm font-medium text-gray-700 mb-2">Message</label>
+                <textarea id="quote-message" name="message" rows={4} value={quoteForm.message} onChange={(e) => setQuoteForm({ ...quoteForm, message: e.target.value })} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0B1F8F] focus:border-transparent" placeholder="Tell us about your insurance needs..." />
               </div>
+              {quoteError && (
+                    <div className="md:col-span-2 text-red-600 text-sm" role="alert" aria-live="assertive">{quoteError}</div>
+              )}
               <div className="md:col-span-2">
-                <button type="submit" className="w-full bg-gradient-to-r from-[#0B1F8F] to-[#2563EB] text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">
-                  Submit Request
+                <button type="submit" disabled={quoteSubmitting} className="w-full bg-gradient-to-r from-[#0B1F8F] to-[#2563EB] text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 disabled:opacity-60">
+                  {quoteSubmitting ? 'Submitting…' : 'Submit Request'}
                 </button>
               </div>
             </form>
+            )}
           </div>
         </div>
       </section>
@@ -1160,7 +1204,7 @@ function LandingPage() {
             Join 100K+ customers who've saved an average of $1,100 on their insurance
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-            <button className="bg-white text-[#0B1F8F] px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5">
+            <button type="button" onClick={handleHeroQuote} className="bg-white text-[#0B1F8F] px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5">
               Compare Quotes Now
             </button>
             <button
@@ -1190,166 +1234,10 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Blog Section */}
-      <section id="blog" className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-full mb-4">
-              <FileText className="w-4 h-4 text-[#0B1F8F]" />
-              <span className="text-sm font-semibold text-[#0B1F8F]">Insurance Resources</span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Insurance Tips & Insights
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Stay informed with our expert advice on insurance, coverage options, and money-saving tips.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Blog Post 1 */}
-            <article className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 overflow-hidden">
-              <div className="h-48 bg-[#0B1F8F] flex items-center justify-center">
-                <Car className="w-16 h-16 text-white" />
-              </div>
-              <div className="p-6">
-                <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
-                  <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-medium">Auto Insurance</span>
-                  <span>•</span>
-                  <span>April 15, 2026</span>
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#0B1F8F] transition">
-                  How to Lower Your Car Insurance Premium in Texas
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Discover proven strategies to reduce your auto insurance costs while maintaining adequate coverage. Learn about discounts, safe driving programs, and more.
-                </p>
-                <Link to="/blog" className="text-[#0B1F8F] font-semibold hover:text-[#1E3A8A] transition flex items-center gap-2">
-                  Read More <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </article>
-
-            {/* Blog Post 2 */}
-            <article className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 overflow-hidden">
-              <div className="h-48 bg-[#0B1F8F] flex items-center justify-center">
-                <Home className="w-16 h-16 text-white" />
-              </div>
-              <div className="p-6">
-                <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
-                  <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">Home Insurance</span>
-                  <span>•</span>
-                  <span>April 10, 2026</span>
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#0B1F8F] transition">
-                  Essential Home Insurance Coverage for Texas Homeowners
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Texas weather can be unpredictable. Learn about the essential coverage types every Texas homeowner should have to protect their investment.
-                </p>
-                <Link to="/blog" className="text-[#0B1F8F] font-semibold hover:text-[#1E3A8A] transition flex items-center gap-2">
-                  Read More <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </article>
-
-            {/* Blog Post 3 */}
-            <article className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 overflow-hidden">
-              <div className="h-48 bg-[#0B1F8F] flex items-center justify-center">
-                <Shield className="w-16 h-16 text-white" />
-              </div>
-              <div className="p-6">
-                <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
-                  <span className="bg-orange-100 text-orange-700 px-2 py-1 rounded-full text-xs font-medium">Flood Insurance</span>
-                  <span>•</span>
-                  <span>April 5, 2026</span>
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#0B1F8F] transition">
-                  Why Texas Homeowners Need Separate Flood Insurance
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Standard homeowners insurance doesn't cover flood damage. Understand why flood insurance is crucial in Texas and how to get affordable coverage.
-                </p>
-                <Link to="/blog" className="text-[#0B1F8F] font-semibold hover:text-[#1E3A8A] transition flex items-center gap-2">
-                  Read More <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </article>
-
-            {/* Blog Post 4 */}
-            <article className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 overflow-hidden">
-              <div className="h-48 bg-[#0B1F8F] flex items-center justify-center">
-                <FileText className="w-16 h-16 text-white" />
-              </div>
-              <div className="p-6">
-                <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
-                  <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-xs font-medium">Business Insurance</span>
-                  <span>•</span>
-                  <span>March 28, 2026</span>
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#0B1F8F] transition">
-                  Business Insurance Essentials for Texas Small Businesses
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Protect your Texas business with the right insurance coverage. Learn about general liability, workers' comp, and other essential policies.
-                </p>
-                <Link to="/blog" className="text-[#0B1F8F] font-semibold hover:text-[#1E3A8A] transition flex items-center gap-2">
-                  Read More <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </article>
-
-            {/* Blog Post 5 */}
-            <article className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 overflow-hidden">
-              <div className="h-48 bg-[#0B1F8F] flex items-center justify-center">
-                <User className="w-16 h-16 text-white" />
-              </div>
-              <div className="p-6">
-                <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
-                  <span className="bg-pink-100 text-pink-700 px-2 py-1 rounded-full text-xs font-medium">Life Insurance</span>
-                  <span>•</span>
-                  <span>March 20, 2026</span>
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#0B1F8F] transition">
-                  Life Insurance 101: Term vs Whole Life Explained
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Confused about life insurance options? We break down the differences between term life, whole life, and universal life insurance to help you decide.
-                </p>
-                <Link to="/blog" className="text-[#0B1F8F] font-semibold hover:text-[#1E3A8A] transition flex items-center gap-2">
-                  Read More <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </article>
-
-            {/* Blog Post 6 */}
-            <article className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-slate-200 overflow-hidden">
-              <div className="h-48 bg-[#0B1F8F] flex items-center justify-center">
-                <TrendingUp className="w-16 h-16 text-white" />
-              </div>
-              <div className="p-6">
-                <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
-                  <span className="bg-teal-100 text-teal-700 px-2 py-1 rounded-full text-xs font-medium">Money Saving Tips</span>
-                  <span>•</span>
-                  <span>March 15, 2026</span>
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#0B1F8F] transition">
-                  10 Ways to Save Money on Insurance Without Sacrificing Coverage
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Learn insider tips to reduce your insurance premiums while maintaining comprehensive coverage. Bundle discounts, safe driving rewards, and more.
-                </p>
-                <Link to="/blog" className="text-[#0B1F8F] font-semibold hover:text-[#1E3A8A] transition flex items-center gap-2">
-                  Read More <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
+      <HomepageBlogSection />
 
       {/* FAQ Section */}
-      <section className="py-20 bg-white">
+      <section id="faq" className="py-20 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -1382,109 +1270,7 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
-            {/* Logo & Contact Info */}
-            <div className="lg:col-span-2">
-              <div className="text-3xl font-bold mb-6">INSHORA GROUP</div>
-              <div className="space-y-4 text-gray-400">
-                <div className="flex items-center gap-3">
-                  <Phone className="w-5 h-5 flex-shrink-0" />
-                  <a href="tel:7139439985" className="hover:text-white transition">(713) 943 - 9985</a>
-                </div>
-                <div className="flex items-center gap-3">
-                  <FileText className="w-5 h-5 flex-shrink-0" />
-                  <a href="mailto:support@inshoragroup.com" className="hover:text-white transition">support@inshoragroup.com</a>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Shield className="w-5 h-5 mt-1 flex-shrink-0" />
-                  <div>
-                    6920 Brisbane Court, Ste 234<br />
-                    Sugar Land, TX 77478
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mt-6">
-                <p className="text-sm text-gray-400 mb-3">Follow us on</p>
-                <div className="flex space-x-4">
-                  <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition" aria-label="Facebook">
-                    <span className="text-sm">f</span>
-                  </a>
-                  <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition" aria-label="Instagram">
-                    <span className="text-sm">IG</span>
-                  </a>
-                  <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition" aria-label="LinkedIn">
-                    <span className="text-sm">in</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-            
-            {/* About  */}
-            <div>
-              <h4 className="font-semibold mb-4">About</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#about" className="hover:text-white transition">About Us</a></li>
-                <li><a href="#contact" className="hover:text-white transition">Contact Us</a></li>
-                <li><a href="#blog" className="hover:text-white transition">Blog</a></li>
-              </ul>
-            </div>
-            
-            {/* Insurance  Services */}
-            <div>
-              <h4 className="font-semibold mb-4">Insurance Services</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#services" className="hover:text-white transition">Auto Insurance</a></li>
-                <li><a href="#services" className="hover:text-white transition">Home Insurance</a></li>
-                <li><a href="#services" className="hover:text-white transition">Rental Home Insurance</a></li>
-                <li><a href="#services" className="hover:text-white transition">Renters Insurance</a></li>
-                <li><a href="#services" className="hover:text-white transition">Flood Insurance</a></li>
-                <li><a href="#services" className="hover:text-white transition">Life Insurance</a></li>
-                <li><a href="#services" className="hover:text-white transition">Retirement Planning</a></li>
-                <li><a href="#services" className="hover:text-white transition">Business Insurance</a></li>
-              </ul>
-            </div>
-            
-            {/* Locations We Serve */}
-            <div>
-              <h4 className="font-semibold mb-4">Locations We Serve</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#locations" className="hover:text-white transition">Sugar Land, TX</a></li>
-                <li><a href="#locations" className="hover:text-white transition">Richmond, TX</a></li>
-                <li><a href="#locations" className="hover:text-white transition">Galveston, TX</a></li>
-                <li><a href="#locations" className="hover:text-white transition">Houston, TX</a></li>
-                <li><a href="#locations" className="hover:text-white transition">Dallas, TX</a></li>
-                <li><a href="#locations" className="hover:text-white transition">Austin, TX</a></li>
-              </ul>
-            </div>
-          </div>
-          
-          {/* Site Map & Copyright  */}
-          <div className="border-t border-gray-800 pt-8">
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <h4 className="font-semibold mb-4">Site Map</h4>
-                <div className="flex flex-wrap gap-6 text-sm text-gray-400">
-                  <a href="#" className="hover:text-white transition">Terms & Conditions</a>
-                  <a href="#" className="hover:text-white transition">Privacy & Cookies</a>
-                  <a href="#" className="hover:text-white transition">Accessibility</a>
-                </div>
-              </div>
-              <div className="md:text-right">
-                <div className="text-gray-400 text-sm mb-2">
-                  © 2024 Inshora. All Rights Reserved
-                </div>
-                <div className="text-gray-500 text-xs">
-                  DESIGNED AND MAINTAINED BY | ROO DIGITAL MARKETING
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
       {/* Voice Agent Modal  */}
       <VoiceAgent isOpen={voiceAgentOpen} onClose={() => setVoiceAgentOpen(false)} />
@@ -1498,13 +1284,17 @@ function LandingPage() {
 function App() {
   return (
     <Routes>
-      <Route path="/blog" element={<Blog />} />
-      <Route path="/blog/:id" element={<BlogPost />} />
+      <Route path="/" element={<LandingPage />} />
       <Route path="/about" element={<About />} />
       <Route path="/services" element={<Services />} />
       <Route path="/locations" element={<Locations />} />
       <Route path="/contact" element={<Contact />} />
-      <Route path="/" element={<LandingPage />} />
+      <Route path="/blog" element={<Blog />} />
+      <Route path="/blog/:id" element={<BlogPost />} />
+      <Route path="/terms" element={<Terms />} />
+      <Route path="/privacy" element={<Privacy />} />
+      <Route path="/accessibility" element={<Accessibility />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   )
 }

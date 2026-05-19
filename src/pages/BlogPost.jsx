@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Calendar, User, Tag, ArrowLeft, Clock, Share2, ArrowRight } from 'lucide-react'
-import Navigation from '../components/Navigation'
+import Layout from '../components/Layout'
+import usePageMeta from '../hooks/usePageMeta'
 
 export default function BlogPost() {
   const { id } = useParams()
@@ -14,6 +15,11 @@ export default function BlogPost() {
   useEffect(() => {
     fetchBlog()
   }, [id])
+
+  usePageMeta({
+    title: blog?.title ? `${blog.title} | Inshora Blog` : 'Blog Post | Inshora Group',
+    description: blog?.meta_description || blog?.excerpt || 'Insurance insights from Inshora Group.',
+  })
 
   const fetchBlog = async () => {
     try {
@@ -80,9 +86,7 @@ export default function BlogPost() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navigation />
-      
+    <Layout>
       {/* Header Image */}
       {blog.image_url && (
         <div className="h-64 md:h-96 bg-gradient-to-br from-[#0B1F8F] to-[#2563EB] relative overflow-hidden">
@@ -194,6 +198,6 @@ export default function BlogPost() {
           </Link>
         </div>
       </div>
-    </div>
+    </Layout>
   )
 }

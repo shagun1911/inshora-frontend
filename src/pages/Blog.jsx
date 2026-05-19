@@ -1,9 +1,16 @@
 import { useState, useEffect } from 'react'
 import { Calendar, User, Tag, ArrowRight, Clock } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import Navigation from '../components/Navigation'
+import Layout from '../components/Layout'
+import PageHeader from '../components/PageHeader'
+import usePageMeta from '../hooks/usePageMeta'
 
 export default function Blog() {
+  usePageMeta({
+    title: 'Insurance Blog | Inshora Group',
+    description: 'Insurance tips and guides from Inshora Group.',
+  })
+
   const [blogs, setBlogs] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -46,18 +53,8 @@ export default function Blog() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navigation />
-      
-      {/* Header */}
-      <div className="bg-gradient-to-r from-[#0B1F8F] to-[#2563EB] text-white py-16 pt-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Inshora Blog</h1>
-          <p className="text-xl text-blue-100 max-w-3xl">
-            Expert insurance tips, guides, and insights to help you make informed decisions about your coverage.
-          </p>
-        </div>
-      </div>
+    <Layout>
+      <PageHeader title="Inshora Blog" subtitle="Expert insurance tips, guides, and insights" />
 
       {/* Blog Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -184,6 +181,6 @@ export default function Blog() {
           </>
         )}
       </div>
-    </div>
+    </Layout>
   )
 }

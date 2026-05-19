@@ -80,8 +80,8 @@ export default function SmartChatbot() {
                 <Bot className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-semibold">Inshora Assistant</h3>
-                <p className="text-xs text-blue-100">Online • Ready to help</p>
+                <h3 className="font-semibold">Quick help</h3>
+                <p className="text-xs text-blue-100">Guided answers — contact us or talk to Sarah for full support</p>
               </div>
             </div>
             <button

@@ -1,21 +1,18 @@
 import { Link } from 'react-router-dom'
 import { Shield, Phone, Mail, MapPin, ArrowRight, CheckCircle } from 'lucide-react'
-import Navigation from '../components/Navigation'
+import Layout from '../components/Layout'
+import PageHeader from '../components/PageHeader'
+import usePageMeta from '../hooks/usePageMeta'
 
 export default function About() {
+  usePageMeta({
+    title: 'About Us | Inshora Group',
+    description: 'Your trusted Texas insurance partner since 2013.',
+  })
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navigation />
-      
-      {/* Header */}
-      <div className="bg-gradient-to-r from-[#0B1F8F] to-[#2563EB] text-white py-16 pt-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">About Inshora Group</h1>
-          <p className="text-xl text-blue-100 max-w-3xl">
-            Your trusted Texas insurance partner since 2013
-          </p>
-        </div>
-      </div>
+    <Layout>
+      <PageHeader title="About Inshora Group" subtitle="Your trusted Texas insurance partner since 2013" />
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -121,6 +118,6 @@ export default function About() {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   )
 }
