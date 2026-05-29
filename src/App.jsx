@@ -3,7 +3,7 @@ import { Routes, Route, Link, useNavigate } from 'react-router-dom'
 import { 
   Star, Phone, Menu, X, ChevronDown, Shield, 
   TrendingUp, Users, Award, Clock, CheckCircle,
-  ArrowRight, Play, Pause, Mic, MicOff, Car, Home,
+  ArrowRight, Play, Pause, Car, Home,
   PawPrint, Package, FileText, User
 } from 'lucide-react'
 import VoiceAgent from './components/VoiceAgent'
@@ -25,12 +25,10 @@ import { isValidZip } from './utils/submitLead'
 
 function LandingPage() {
   const navigate = useNavigate()
-  const [isListening, setIsListening] = useState(false)
   const [activeTab, setActiveTab] = useState('Auto')
   const [zipCode, setZipCode] = useState('')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [openFaq, setOpenFaq] = useState(null)
-  const [voiceAgentOpen, setVoiceAgentOpen] = useState(false)
   const [zipError, setZipError] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
@@ -153,11 +151,6 @@ function LandingPage() {
       return
     }
     navigate(`/quote?zip=${encodeURIComponent(zipCode)}&type=${typeMap[activeTab] || 'auto'}`)
-  }
-
-  const toggleVoiceAgent = () => {
-    setVoiceAgentOpen(!voiceAgentOpen)
-    setIsListening(!isListening)
   }
 
   const toggleFaq = (index) => {
@@ -578,15 +571,9 @@ function LandingPage() {
                 </div>
               </div>
 
-              {/* Voice Agent Bar Below Phone */}
-              <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2">
-                <button
-                  onClick={() => setVoiceAgentOpen(true)}
-                  className="w-16 h-16 bg-gradient-to-r from-[#FF5A1F] to-[#FF6B35] rounded-full flex items-center justify-center shadow-2xl hover:shadow-3xl hover:scale-110 transition-all duration-300"
-                >
-                  <Mic className="w-7 h-7 text-white" />
-                </button>
-                <span className="text-xs text-white font-medium">Talk to Sarah</span>
+              {/* Voice Agent — inline, no popup */}
+              <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 w-max max-w-[calc(100vw-2rem)]">
+                <VoiceAgent variant="fab" label="Talk to Sarah" />
               </div>
             </div>
           </div>
@@ -1013,13 +1000,7 @@ function LandingPage() {
               <p className="text-gray-600 mb-6">
                 Connect with our licensed agents who can guide you through the process.
               </p>
-              <button
-                type="button"
-                onClick={() => setVoiceAgentOpen(true)}
-                className="bg-[#0B1F8F] hover:bg-[#1C2ED6] text-white px-6 py-3 rounded-xl font-semibold transition transform hover:scale-105"
-              >
-                Connect With an Expert
-              </button>
+              <VoiceAgent variant="primary" label="Talk to Sarah" />
             </div>
           </div>
         </div>
@@ -1174,13 +1155,7 @@ function LandingPage() {
             <button type="button" onClick={handleHeroQuote} className="bg-white text-[#0B1F8F] px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5">
               Compare Quotes Now
             </button>
-            <button
-              onClick={() => setVoiceAgentOpen(true)}
-              className="bg-gradient-to-r from-[#FF5A1F] to-[#FF6B35] text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 flex items-center gap-2"
-            >
-              <Mic className="w-5 h-5" />
-              Talk to Sarah
-            </button>
+            <VoiceAgent variant="cta" label="Talk to Sarah" />
           </div>
           <div className="flex items-center justify-center gap-6 text-blue-100">
             <div className="flex items-center gap-2">
@@ -1239,9 +1214,6 @@ function LandingPage() {
 
       <Footer />
 
-      {/* Voice Agent Modal  */}
-      <VoiceAgent isOpen={voiceAgentOpen} onClose={() => setVoiceAgentOpen(false)} />
-      
       {/* Smart Chatbot */}
       <SmartChatbot />
     </div>

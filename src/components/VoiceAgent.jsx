@@ -1,74 +1,87 @@
 import { useState, useEffect, useRef } from 'react'
 import { Room, Track, RoomEvent } from 'livekit-client'
-import { Mic, MicOff, Phone, PhoneOff, Sparkles } from 'lucide-react'
+import { Mic, MicOff, PhoneOff, Loader2 } from 'lucide-react'
 
-export default function VoiceAgent({ isOpen, onClose }) {
+function Waveform({ muted, light }) {
+  if (muted) return null
+  const barClass = light ? 'bg-emerald-500/80' : 'bg-emerald-400/90'
+  return (
+    <div className="flex items-end gap-[2px] h-3.5" aria-hidden>
+      {[6, 10, 7, 11].map((h, i) => (
+        <span
+          key={i}
+          className={`w-[2.5px] rounded-full origin-bottom animate-pulse ${barClass}`}
+          style={{ height: `${h}px`, animationDelay: `${i * 100}ms`, animationDuration: '0.7s' }}
+        />
+      ))}
+    </div>
+  )
+}
+
+const VARIANTS = {
+  fab: {
+    surface: 'dark',
+    idle:
+      'group flex items-center gap-3 px-5 py-3.5 rounded-full bg-gradient-to-r from-[#FF5A1F] to-[#FF6B35] text-white font-semibold text-sm shadow-lg shadow-orange-900/25 hover:shadow-orange-900/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300',
+    active:
+      'bg-white/10 backdrop-blur-2xl border border-white/20 shadow-2xl shadow-black/20 text-white',
+    hint: 'text-[11px] text-white/50 font-medium tracking-wide',
+    error: 'text-red-200',
+  },
+  cta: {
+    surface: 'dark',
+    idle:
+      'group flex items-center gap-3 px-6 py-3.5 rounded-full bg-white/95 text-gray-900 font-semibold text-base shadow-lg shadow-black/10 hover:bg-white hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300',
+    active:
+      'bg-white/15 backdrop-blur-2xl border border-white/25 shadow-xl text-white',
+    hint: null,
+    error: 'text-red-200',
+  },
+  primary: {
+    surface: 'light',
+    idle:
+      'group flex items-center gap-2.5 px-5 py-3 rounded-xl bg-[#0B1F8F] text-white font-semibold hover:bg-[#1C2ED6] active:scale-[0.98] transition-all duration-200',
+    active:
+      'bg-white border border-gray-200 shadow-lg text-gray-900',
+    hint: null,
+    error: 'text-red-600',
+  },
+}
+
+export default function VoiceAgent({ variant = 'cta', className = '', label = 'Talk to Sarah' }) {
   const [room, setRoom] = useState(null)
   const [isConnected, setIsConnected] = useState(false)
   const [isMuted, setIsMuted] = useState(false)
-  const [audioLevel, setAudioLevel] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
-  const audioLevelInterval = useRef(null)
   const remoteAudioContainerRef = useRef(null)
-  const modalRef = useRef(null)
 
-  useEffect(() => {
-    if (!isOpen || !modalRef.current) return
-    const root = modalRef.current
-    const focusable = root.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    )
-    const items = Array.from(focusable)
-    items[0]?.focus()
-
-    const onKeyDown = (e) => {
-      if (e.key !== 'Tab' || items.length === 0) return
-      const first = items[0]
-      const last = items[items.length - 1]
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault()
-        last.focus()
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault()
-        first.focus()
-      }
-    }
-    document.addEventListener('keydown', onKeyDown)
-    return () => document.removeEventListener('keydown', onKeyDown)
-  }, [isOpen, isConnected, isLoading])
+  const v = VARIANTS[variant] || VARIANTS.cta
+  const isLight = v.surface === 'light'
 
   const connectToRoom = async () => {
     try {
       setIsLoading(true)
       setError(null)
 
-      // Request microphone permission
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      stream.getTracks().forEach(track => track.stop())
+      stream.getTracks().forEach((track) => track.stop())
 
-      // Request room from backend
       const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:5001'
       const response = await fetch(`${backendUrl}/create_room`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           identity: 'user-' + Math.random().toString(36).substr(2, 9),
         }),
       })
 
-      if (!response.ok) {
-        throw new Error('Failed to create room')
-      }
+      if (!response.ok) throw new Error('Failed to connect. Please try again.')
 
       const data = await response.json()
-
-      // Connect to LiveKit room
       const newRoom = new Room()
-      
-      newRoom.on(RoomEvent.TrackSubscribed, (track, publication, participant) => {
+
+      newRoom.on(RoomEvent.TrackSubscribed, (track) => {
         if (track.kind === Track.Kind.Audio) {
           const element = track.attach()
           element.autoplay = true
@@ -78,39 +91,27 @@ export default function VoiceAgent({ isOpen, onClose }) {
       })
 
       newRoom.on(RoomEvent.TrackUnsubscribed, (track) => {
-        const elements = track.detach()
-        elements.forEach((element) => element.remove())
-      })
-
-      newRoom.on(RoomEvent.ParticipantConnected, () => {
-        console.log('Agent connected')
+        track.detach().forEach((element) => element.remove())
       })
 
       newRoom.on(RoomEvent.ParticipantDisconnected, () => {
-        console.log('Agent disconnected')
         setIsConnected(false)
       })
 
       await newRoom.connect(data.url, data.token)
-      
-      // Enable microphone
       await newRoom.localParticipant.setMicrophoneEnabled(true)
-      
+
       setRoom(newRoom)
       setIsConnected(true)
       setIsLoading(false)
-
-      // Start monitoring audio levels
-      startAudioLevelMonitoring(newRoom)
-
     } catch (err) {
       console.error('Error connecting to room:', err)
       if (err?.name === 'NotAllowedError') {
-        setError('Microphone permission was denied. Please allow mic access in your browser and try again.')
+        setError('Allow microphone access to talk to Sarah.')
       } else if (err?.name === 'NotFoundError') {
-        setError('No microphone device was found. Please connect a mic and try again.')
+        setError('No microphone found.')
       } else {
-        setError(err.message || 'Failed to connect to voice assistant.')
+        setError(err.message || 'Could not connect to Sarah.')
       }
       setIsLoading(false)
     }
@@ -124,163 +125,130 @@ export default function VoiceAgent({ isOpen, onClose }) {
       }
       setRoom(null)
       setIsConnected(false)
+      setIsMuted(false)
       setIsLoading(false)
-      stopAudioLevelMonitoring()
     }
   }
 
   const toggleMute = () => {
     if (room) {
-      room.localParticipant.setMicrophoneEnabled(!isMuted)
+      room.localParticipant.setMicrophoneEnabled(isMuted)
       setIsMuted(!isMuted)
     }
   }
 
-  const startAudioLevelMonitoring = (currentRoom) => {
-    audioLevelInterval.current = setInterval(() => {
-      if (currentRoom.localParticipant) {
-        const audioTrack = currentRoom.localParticipant.audioTrack
-        if (audioTrack && audioTrack.mediaStreamTrack) {
-          const settings = audioTrack.mediaStreamTrack.getSettings()
-          if (settings) {
-            setAudioLevel((settings.volume || 0) * 100)
-          }
-        }
-      }
-    }, 100)
-  }
-
-  const stopAudioLevelMonitoring = () => {
-    if (audioLevelInterval.current) {
-      clearInterval(audioLevelInterval.current)
-      audioLevelInterval.current = null
-    }
-    setAudioLevel(0)
-  }
-
-  // Only cleanup on close; connect happens on explicit button click
-  useEffect(() => {
-    if (!isOpen && room) disconnectFromRoom()
-  }, [isOpen, room])
-
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
-      stopAudioLevelMonitoring()
+      if (room) room.disconnect()
     }
-  }, [])
+  }, [room])
 
-  if (!isOpen) return null
+  const sessionLabel = isLoading
+    ? 'Connecting…'
+    : isMuted
+      ? 'Mic muted'
+      : 'Listening'
+
+  const iconWrap =
+    variant === 'fab'
+      ? 'w-9 h-9 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/25 transition-colors'
+      : variant === 'cta'
+        ? 'w-9 h-9 rounded-full bg-gradient-to-br from-[#FF5A1F] to-[#FF6B35] flex items-center justify-center text-white shadow-md'
+        : ''
+
+  const showSession = isLoading || isConnected
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" role="presentation">
-      <div
-        ref={modalRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="voice-agent-title"
-        className="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl"
-      >
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-[#0B1F8F] to-[#2563EB] rounded-full flex items-center justify-center">
-              <Sparkles className="w-6 h-6 text-white" />
-            </div>
-            <h2 id="voice-agent-title" className="text-2xl font-bold text-gray-900">Sarah - AI Voice Agent</h2>
-          </div>
-          
-          <p className="text-gray-600 mb-2">
-            {isLoading ? 'Connecting...' : isConnected ? 'Connected and listening' : 'Click to connect'}
-          </p>
-          
-          <p className="text-sm text-gray-500 mb-8">
-            {isConnected 
-              ? 'Sarah is ready to help you with insurance quotes, coverage questions, and more. Just speak naturally!'
-              : 'Connect to speak with Sarah, our AI-powered insurance assistant available 24/7.'}
-          </p>
-
-          {/* Audio Level Visualizer */}
-          <div className="relative w-56 h-56 mx-auto mb-8">
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#0B1F8F] to-[#2563EB] opacity-10" />
-            <div
-              className="absolute inset-0 rounded-full bg-gradient-to-br from-[#0B1F8F] to-[#2563EB] transition-all duration-100"
-              style={{
-                transform: `scale(${0.5 + audioLevel / 200})`,
-                opacity: 0.2 + audioLevel / 300,
-              }}
-            />
-            <div className="absolute inset-6 rounded-full bg-white flex items-center justify-center shadow-lg">
-              {isLoading ? (
-                <div className="animate-spin rounded-full h-20 w-20 border-b-2 border-[#0B1F8F]" />
-              ) : isConnected ? (
-                <div className="text-center">
-                  <div className="text-5xl mb-2">🎤</div>
-                  <p className="text-xs text-gray-500 font-medium">Listening</p>
-                </div>
-              ) : (
-                <div className="text-center">
-                  <div className="text-5xl mb-2">🔇</div>
-                  <p className="text-xs text-gray-500 font-medium">Ready to connect</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Audio Level Bar */}
-          {isConnected && (
-            <div className="w-full h-3 bg-gray-200 rounded-full mb-8 overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-[#0B1F8F] to-[#2563EB] transition-all duration-100"
-                style={{ width: `${audioLevel}%` }}
-              />
-            </div>
+    <div className={`inline-flex flex-col items-center gap-2 ${className}`}>
+      {!showSession ? (
+        <button type="button" onClick={connectToRoom} className={v.idle} aria-label={label}>
+          {(variant === 'fab' || variant === 'cta') && (
+            <span className={iconWrap}>
+              <Mic className="w-4 h-4" />
+            </span>
           )}
+          {variant === 'primary' && <Mic className="w-4 h-4" />}
+          <span>{label}</span>
+        </button>
+      ) : (
+        <div
+          className={`
+            flex items-center gap-3 rounded-full transition-all duration-500 ease-out
+            px-4 py-2.5 sm:px-5 min-w-[200px] sm:min-w-[240px]
+            ${v.active}
+          `}
+          role="status"
+          aria-live="polite"
+        >
+          {isLoading ? (
+            <div className="flex items-center justify-center gap-2.5 w-full py-0.5">
+              <Loader2 className={`w-4 h-4 animate-spin ${isLight ? 'text-[#0B1F8F]' : 'text-white'}`} />
+              <span className={`text-sm font-medium ${isLight ? 'text-gray-700' : 'text-white/95'}`}>
+                Connecting to Sarah…
+              </span>
+            </div>
+          ) : (
+            <>
+              <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                <span className="relative flex h-2 w-2 flex-shrink-0">
+                  {!isMuted && (
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 animate-ping" />
+                  )}
+                  <span
+                    className={`relative inline-flex h-2 w-2 rounded-full ${isMuted ? 'bg-amber-400' : 'bg-emerald-400'}`}
+                  />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className={`text-sm font-semibold leading-none truncate ${isLight ? 'text-gray-900' : 'text-white'}`}>
+                    Sarah
+                  </p>
+                  <p className={`text-[11px] mt-0.5 truncate ${isLight ? 'text-gray-500' : 'text-white/65'}`}>
+                    {sessionLabel}
+                  </p>
+                </div>
+                {!isMuted && <Waveform muted={isMuted} light={isLight} />}
+              </div>
 
-          {/* Controls */}
-          <div className="flex justify-center gap-4">
-            {isConnected ? (
-              <>
+              <div className={`flex items-center flex-shrink-0 rounded-full p-0.5 ${isLight ? 'bg-gray-100' : 'bg-white/10'}`}>
                 <button
+                  type="button"
                   onClick={toggleMute}
-                  className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-105 ${
-                    isMuted ? 'bg-gray-200 text-gray-600' : 'bg-gradient-to-r from-[#0B1F8F] to-[#2563EB] text-white'
+                  aria-label={isMuted ? 'Unmute' : 'Mute'}
+                  className={`p-2 rounded-full transition-colors ${
+                    isLight
+                      ? 'text-gray-600 hover:text-gray-900 hover:bg-white'
+                      : 'text-white/80 hover:text-white hover:bg-white/15'
                   }`}
                 >
-                  {isMuted ? <MicOff className="w-7 h-7" /> : <Mic className="w-7 h-7" />}
+                  {isMuted ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
                 </button>
                 <button
+                  type="button"
                   onClick={disconnectFromRoom}
-                  className="w-16 h-16 rounded-full bg-gradient-to-r from-red-500 to-red-600 text-white flex items-center justify-center hover:from-red-600 hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                  aria-label="End conversation"
+                  className={`p-2 rounded-full transition-colors ${
+                    isLight
+                      ? 'text-red-500 hover:bg-red-50'
+                      : 'text-red-300 hover:bg-red-500/25 hover:text-red-200'
+                  }`}
                 >
-                  <PhoneOff className="w-7 h-7" />
+                  <PhoneOff className="w-3.5 h-3.5" />
                 </button>
-              </>
-            ) : (
-              <button
-                onClick={connectToRoom}
-                disabled={isLoading}
-                className="w-20 h-20 rounded-full bg-gradient-to-r from-[#0B1F8F] to-[#2563EB] text-white flex items-center justify-center hover:from-[#1C2ED6] hover:to-[#3B82F6] transition-all duration-300 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Phone className="w-8 h-8" />
-              </button>
-            )}
-          </div>
-
-          {error && (
-            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-600 text-sm">{error}</p>
-            </div>
+              </div>
+            </>
           )}
-
-          <button
-            onClick={onClose}
-            className="mt-6 text-gray-500 hover:text-gray-700 text-sm font-medium"
-          >
-            Close
-          </button>
-          <div ref={remoteAudioContainerRef} />
         </div>
-      </div>
+      )}
+
+      {error && !showSession && (
+        <p className={`text-xs text-center max-w-[200px] leading-snug ${v.error}`} role="alert">
+          {error}
+        </p>
+      )}
+
+      {v.hint && !showSession && !error && <p className={v.hint}>AI voice assistant</p>}
+
+      <div ref={remoteAudioContainerRef} className="sr-only" aria-hidden />
     </div>
   )
 }
