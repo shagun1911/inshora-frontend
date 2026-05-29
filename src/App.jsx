@@ -21,7 +21,7 @@ import Accessibility from './pages/Accessibility'
 import NotFound from './pages/NotFound'
 import Footer from './components/Footer'
 import HomepageBlogSection from './components/HomepageBlogSection'
-import { submitLead, isValidZip } from './utils/submitLead'
+import { isValidZip } from './utils/submitLead'
 
 function LandingPage() {
   const navigate = useNavigate()
@@ -33,12 +33,6 @@ function LandingPage() {
   const [voiceAgentOpen, setVoiceAgentOpen] = useState(false)
   const [zipError, setZipError] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const [quoteForm, setQuoteForm] = useState({
-    name: '', email: '', phone: '', insurance_type: '', zip: '', message: '',
-  })
-  const [quoteSubmitting, setQuoteSubmitting] = useState(false)
-  const [quoteError, setQuoteError] = useState('')
-  const [quoteSuccess, setQuoteSuccess] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -148,32 +142,17 @@ function LandingPage() {
     }
   ]
 
+  const typeMap = { Auto: 'auto', Home: 'home', Renters: 'renters', Pet: 'pet', Bundle: 'bundle' }
+  const wizardLink = isValidZip(zipCode)
+    ? `/quote?zip=${encodeURIComponent(zipCode)}&type=${typeMap[activeTab] || 'auto'}`
+    : '/quote'
+
   const handleHeroQuote = () => {
     if (!isValidZip(zipCode)) {
       setZipError(true)
       return
     }
-    const typeMap = { Auto: 'auto', Home: 'home', Renters: 'renters', Pet: 'pet', Bundle: 'bundle' }
     navigate(`/quote?zip=${encodeURIComponent(zipCode)}&type=${typeMap[activeTab] || 'auto'}`)
-  }
-
-  const handleQuoteSubmit = async (e) => {
-    e.preventDefault()
-    setQuoteError('')
-    setQuoteSubmitting(true)
-    try {
-      await submitLead({
-        ...quoteForm,
-        source: 'homepage_quote',
-        insurance_type: quoteForm.insurance_type || activeTab,
-      })
-      setQuoteSuccess(true)
-      setQuoteForm({ name: '', email: '', phone: '', insurance_type: '', zip: '', message: '' })
-    } catch (err) {
-      setQuoteError(err.message)
-    } finally {
-      setQuoteSubmitting(false)
-    }
   }
 
   const toggleVoiceAgent = () => {
@@ -234,6 +213,16 @@ function LandingPage() {
               <Link to="/contact" className={`transition font-medium text-sm ${
                 scrolled ? 'text-gray-600 hover:text-[#0B1F8F]' : 'text-white/90 hover:text-white'
               }`}>Contact</Link>
+              <Link
+                to="/quote"
+                className={`px-4 py-2 rounded-lg font-semibold text-sm transition ${
+                  scrolled
+                    ? 'bg-[#0B1F8F] text-white hover:bg-[#1C2ED6]'
+                    : 'bg-white text-[#0B1F8F] hover:bg-blue-50'
+                }`}
+              >
+                Get Quote
+              </Link>
               <div className={`h-6 w-px transition-colors ${
                 scrolled ? 'bg-gray-200' : 'bg-white/30'
               }`}></div>
@@ -272,6 +261,7 @@ function LandingPage() {
               <Link to="/services" onClick={() => setMobileMenuOpen(false)} className="block text-gray-700 hover:text-[#0B1F8F] font-medium">Services</Link>
               <Link to="/locations" onClick={() => setMobileMenuOpen(false)} className="block text-gray-700 hover:text-[#0B1F8F] font-medium">Locations</Link>
               <Link to="/contact" onClick={() => setMobileMenuOpen(false)} className="block text-gray-700 hover:text-[#0B1F8F] font-medium">Contact</Link>
+              <Link to="/quote" onClick={() => setMobileMenuOpen(false)} className="block bg-[#0B1F8F] text-white text-center px-4 py-3 rounded-lg font-semibold">Get Quote</Link>
               <div className="pt-4 border-t border-gray-100">
                 <a href="tel:7139439985" className="flex items-center text-gray-700 font-semibold">
                   <Phone className="w-4 h-4 mr-2" />
@@ -1129,60 +1119,36 @@ function LandingPage() {
             </div>
           </div>
 
-          {/* Contact Form */}
+          {/* Quote wizard CTA */}
           <div className="bg-white rounded-3xl p-8 md:p-12 shadow-lg border border-gray-100">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">Request a Free Quote</h3>
-            {quoteSuccess ? (
-              <div className="rounded-xl bg-green-50 border border-green-200 p-6 text-center" role="status" aria-live="polite">
-                <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-3" />
-                <p className="font-semibold text-gray-900">Thank you! We will contact you shortly.</p>
-              </div>
-            ) : (
-            <form onSubmit={handleQuoteSubmit} className="grid md:grid-cols-2 gap-6">
-              <input type="text" name="website" className="hidden" tabIndex={-1} autoComplete="off" aria-hidden />
+            <div className="grid md:grid-cols-2 gap-10 items-center">
               <div>
-                <label htmlFor="quote-name" className="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
-                <input id="quote-name" name="name" type="text" required value={quoteForm.name} onChange={(e) => setQuoteForm({ ...quoteForm, name: e.target.value })} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0B1F8F] focus:border-transparent" placeholder="John Doe" />
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Get accurate quotes in minutes</h3>
+                <p className="text-gray-600 mb-6">
+                  Our guided quote wizard collects the same details major carriers need — vehicle, driver, property, and coverage preferences — so a licensed agent can compare 25+ options for you.
+                </p>
+                <ul className="space-y-3 text-sm text-gray-600 mb-8">
+                  <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0" /> 30+ relevant questions per insurance type</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0" /> No spam — one agent, multiple carrier quotes</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0" /> Licensed Texas agents · Free & no obligation</li>
+                </ul>
+                <Link
+                  to={wizardLink}
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-[#0B1F8F] to-[#2563EB] text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
+                >
+                  Start quote wizard
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
               </div>
-              <div>
-                <label htmlFor="quote-phone" className="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
-                <input id="quote-phone" name="phone" type="tel" required value={quoteForm.phone} onChange={(e) => setQuoteForm({ ...quoteForm, phone: e.target.value })} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0B1F8F] focus:border-transparent" placeholder="(713) 555-0123" />
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-100">
+                <p className="text-sm font-semibold text-[#0B1F8F] uppercase tracking-wide mb-4">Prefer to talk?</p>
+                <a href="tel:7139439985" className="text-3xl font-bold text-gray-900 hover:text-[#0B1F8F] transition block mb-2">(713) 943-9985</a>
+                <p className="text-gray-600 text-sm mb-6">Mon–Fri 8 AM – 8 PM CT · Sat 10 AM – 4 PM CT</p>
+                <Link to="/contact" className="text-[#0B1F8F] font-semibold text-sm hover:underline">
+                  General inquiries & flood/life/business → Contact us
+                </Link>
               </div>
-              <div>
-                <label htmlFor="quote-email" className="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
-                <input id="quote-email" name="email" type="email" required value={quoteForm.email} onChange={(e) => setQuoteForm({ ...quoteForm, email: e.target.value })} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0B1F8F] focus:border-transparent" placeholder="john@example.com" />
-              </div>
-              <div>
-                <label htmlFor="quote-type" className="block text-sm font-medium text-gray-700 mb-2">Insurance Type *</label>
-                <select id="quote-type" name="insurance_type" required value={quoteForm.insurance_type} onChange={(e) => setQuoteForm({ ...quoteForm, insurance_type: e.target.value })} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0B1F8F] focus:border-transparent">
-                  <option value="">Select insurance type</option>
-                  <option value="auto">Auto Insurance</option>
-                  <option value="home">Home Insurance</option>
-                  <option value="renters">Renters Insurance</option>
-                  <option value="flood">Flood Insurance</option>
-                  <option value="life">Life Insurance</option>
-                  <option value="business">Business Insurance</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-              <div className="md:col-span-2">
-                <label htmlFor="quote-zip" className="block text-sm font-medium text-gray-700 mb-2">ZIP Code *</label>
-                <input id="quote-zip" name="zip" type="text" required value={quoteForm.zip || zipCode} onChange={(e) => setQuoteForm({ ...quoteForm, zip: e.target.value })} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0B1F8F] focus:border-transparent" placeholder="77478" maxLength={5} />
-              </div>
-              <div className="md:col-span-2">
-                <label htmlFor="quote-message" className="block text-sm font-medium text-gray-700 mb-2">Message</label>
-                <textarea id="quote-message" name="message" rows={4} value={quoteForm.message} onChange={(e) => setQuoteForm({ ...quoteForm, message: e.target.value })} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0B1F8F] focus:border-transparent" placeholder="Tell us about your insurance needs..." />
-              </div>
-              {quoteError && (
-                    <div className="md:col-span-2 text-red-600 text-sm" role="alert" aria-live="assertive">{quoteError}</div>
-              )}
-              <div className="md:col-span-2">
-                <button type="submit" disabled={quoteSubmitting} className="w-full bg-gradient-to-r from-[#0B1F8F] to-[#2563EB] text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 disabled:opacity-60">
-                  {quoteSubmitting ? 'Submitting…' : 'Submit Request'}
-                </button>
-              </div>
-            </form>
-            )}
+            </div>
           </div>
         </div>
       </section>

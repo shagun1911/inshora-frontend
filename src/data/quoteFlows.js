@@ -433,7 +433,7 @@ const petHealthStep = {
   fields: [
     { name: 'currently_insured', label: 'Currently have pet insurance?', type: 'yesno', options: yesNo, default: 'no' },
     { name: 'current_carrier', label: 'Current pet insurer', type: 'text', showWhen: showIf('currently_insured', 'yes'), half: true },
-    { name: 'vet_visits_yearly', label: 'Vet visits per year', type: 'select', options: [{ value: '0_1', label: '0–1' }, { value: '2_3', label: '2–3' }, { value: '4+', label: '4 or more' }], default: '1_2', half: true },
+    { name: 'vet_visits_yearly', label: 'Vet visits per year', type: 'select', options: [{ value: '0_1', label: '0–1' }, { value: '2_3', label: '2–3' }, { value: '4+', label: '4 or more' }], default: '0_1', half: true },
     { name: 'chronic_conditions', label: 'Any chronic or pre-existing conditions?', type: 'yesno', options: yesNo, default: 'no' },
     { name: 'condition_details', label: 'Describe conditions', type: 'textarea', showWhen: showIf('chronic_conditions', 'yes') },
     { name: 'medications', label: 'Currently on regular medications?', type: 'yesno', options: yesNo, default: 'no' },

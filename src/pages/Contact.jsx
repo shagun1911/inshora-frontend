@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams, useNavigate } from 'react-router-dom'
 import { Phone, Mail, MapPin, Clock, Send, ArrowRight, CheckCircle } from 'lucide-react'
 import Layout from '../components/Layout'
 import PageHeader from '../components/PageHeader'
@@ -8,6 +8,7 @@ import { submitLead } from '../utils/submitLead'
 
 export default function Contact() {
   const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -29,14 +30,12 @@ export default function Contact() {
     const zip = searchParams.get('zip')
     const type = searchParams.get('type')
     if (zip || type) {
-      setFormData((prev) => ({
-        ...prev,
-        zip: zip || prev.zip,
-        insurance_type: type || prev.insurance_type,
-        message: prev.message || (zip ? `Quote request for ZIP ${zip}` : prev.message),
-      }))
+      const params = new URLSearchParams()
+      if (zip) params.set('zip', zip)
+      if (type) params.set('type', type)
+      navigate(`/quote?${params.toString()}`, { replace: true })
     }
-  }, [searchParams])
+  }, [searchParams, navigate])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -137,8 +136,8 @@ export default function Contact() {
             </div>
 
             <div className="mt-8 bg-gradient-to-r from-[#0B1F8F] to-[#2563EB] rounded-2xl p-6 text-white">
-              <h3 className="text-xl font-bold mb-2">Need a Quick Quote?</h3>
-              <p className="text-blue-100 mb-4">Get a free, no-obligation quote in minutes</p>
+              <h3 className="text-xl font-bold mb-2">Need a Full Quote?</h3>
+              <p className="text-blue-100 mb-4">Use our guided wizard with 30+ carrier-ready questions</p>
               <Link
                 to="/quote"
                 className="inline-flex items-center gap-2 bg-white text-[#0B1F8F] px-6 py-3 rounded-xl font-semibold hover:bg-blue-50 transition"

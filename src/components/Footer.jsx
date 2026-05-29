@@ -88,6 +88,7 @@ export default function Footer() {
             <h2 className="font-semibold mb-4 text-sm uppercase tracking-wide text-gray-300">Company</h2>
             <ul className="space-y-2 text-gray-400">
               <li><Link to="/about" className="hover:text-white transition">About Us</Link></li>
+              <li><Link to="/quote" className="hover:text-white transition">Get a Quote</Link></li>
               <li><Link to="/contact" className="hover:text-white transition">Contact Us</Link></li>
               <li><Link to="/blog" className="hover:text-white transition">Blog</Link></li>
             </ul>

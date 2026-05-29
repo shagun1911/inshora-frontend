@@ -45,7 +45,7 @@ export default function SmartChatbot() {
         ...prev,
         {
           role: 'assistant',
-          text: 'Sorry, I had trouble responding. You can call (713) 943-9985 or submit our Contact form for help.',
+          text: 'Sorry, I had trouble responding. You can call (713) 943-9985 or start our quote wizard for help.',
         },
       ])
     } finally {
@@ -169,6 +169,10 @@ export default function SmartChatbot() {
             </div>
             <p className="text-[10px] text-gray-400 mt-2 text-center">
               AI assistant · Not a binding quote ·{' '}
+              <Link to="/quote" className="text-[#0B1F8F] hover:underline">
+                Get a quote
+              </Link>
+              {' · '}
               <Link to="/contact" className="text-[#0B1F8F] hover:underline">
                 Contact an agent
               </Link>

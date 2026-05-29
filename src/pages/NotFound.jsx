@@ -24,8 +24,14 @@ export default function NotFound() {
             Back to home
           </Link>
           <Link
-            to="/contact"
+            to="/quote"
             className="border border-[#0B1F8F] text-[#0B1F8F] px-6 py-3 rounded-xl font-semibold hover:bg-blue-50 transition"
+          >
+            Get a quote
+          </Link>
+          <Link
+            to="/contact"
+            className="border border-gray-300 text-gray-700 px-6 py-3 rounded-xl font-semibold hover:bg-gray-50 transition"
           >
             Contact us
           </Link>
