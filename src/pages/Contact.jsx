@@ -140,7 +140,7 @@ export default function Contact() {
               <h3 className="text-xl font-bold mb-2">Need a Quick Quote?</h3>
               <p className="text-blue-100 mb-4">Get a free, no-obligation quote in minutes</p>
               <Link
-                to="/"
+                to="/quote"
                 className="inline-flex items-center gap-2 bg-white text-[#0B1F8F] px-6 py-3 rounded-xl font-semibold hover:bg-blue-50 transition"
               >
                 Get Free Quote

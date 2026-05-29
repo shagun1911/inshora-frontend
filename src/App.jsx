@@ -14,6 +14,7 @@ import About from './pages/About'
 import Services from './pages/Services'
 import Locations from './pages/Locations'
 import Contact from './pages/Contact'
+import Quote from './pages/Quote'
 import Terms from './pages/Terms'
 import Privacy from './pages/Privacy'
 import Accessibility from './pages/Accessibility'
@@ -153,7 +154,7 @@ function LandingPage() {
       return
     }
     const typeMap = { Auto: 'auto', Home: 'home', Renters: 'renters', Pet: 'pet', Bundle: 'bundle' }
-    navigate(`/contact?zip=${encodeURIComponent(zipCode)}&type=${typeMap[activeTab] || 'auto'}`)
+    navigate(`/quote?zip=${encodeURIComponent(zipCode)}&type=${typeMap[activeTab] || 'auto'}`)
   }
 
   const handleQuoteSubmit = async (e) => {
@@ -1289,6 +1290,7 @@ function App() {
       <Route path="/services" element={<Services />} />
       <Route path="/locations" element={<Locations />} />
       <Route path="/contact" element={<Contact />} />
+      <Route path="/quote" element={<Quote />} />
       <Route path="/blog" element={<Blog />} />
       <Route path="/blog/:id" element={<BlogPost />} />
       <Route path="/terms" element={<Terms />} />

@@ -190,7 +190,7 @@ export default function BlogPost() {
             Get personalized quotes from 25+ A-rated carriers in minutes.
           </p>
           <Link
-            to="/"
+            to="/quote"
             className="inline-flex items-center gap-2 bg-white text-[#0B1F8F] px-6 py-3 rounded-xl font-semibold hover:bg-blue-50 transition"
           >
             Get Free Quote

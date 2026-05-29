@@ -130,7 +130,7 @@ export default function Services() {
               Compare quotes from 25+ A-rated carriers and find the perfect coverage for your needs.
             </p>
             <Link
-              to="/"
+              to="/quote"
               className="inline-flex items-center gap-2 bg-white text-[#0B1F8F] px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition"
             >
               Get Free Quote

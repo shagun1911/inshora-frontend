@@ -55,7 +55,7 @@ export default function Navigation() {
               </Link>
             ))}
             <Link
-              to="/"
+              to="/quote"
               className="bg-[#0B1F8F] text-white px-5 py-2 rounded-lg font-medium hover:bg-[#1C2ED6] transition-colors"
             >
               Get Quote
@@ -90,7 +90,7 @@ export default function Navigation() {
                 </Link>
               ))}
               <Link
-                to="/"
+                to="/quote"
                 onClick={() => setIsOpen(false)}
                 className="bg-[#0B1F8F] text-white px-5 py-2 rounded-lg font-medium hover:bg-[#1C2ED6] transition-colors text-center"
               >

@@ -165,7 +165,7 @@ export default function Locations() {
             Get a free, no-obligation quote from our licensed agents. Serving all of Texas.
           </p>
           <Link
-            to="/"
+            to="/quote"
             className="inline-flex items-center gap-2 bg-white text-[#0B1F8F] px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition"
           >
             Get Free Quote
