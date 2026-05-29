@@ -165,7 +165,7 @@ export default function Quote() {
 
   return (
     <Layout>
-      <div className="bg-gradient-to-r from-[#0B1F8F] to-[#2563EB] text-white py-10 pt-24">
+      <div className="bg-gradient-to-r from-[#0B1F8F] to-[#2563EB] text-white py-10 pt-28">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">Get Your Free Quote</h1>
           <p className="text-blue-100 mb-4">

@@ -22,7 +22,7 @@ const VARIANTS = {
   fab: {
     surface: 'dark',
     idle:
-      'group flex items-center gap-3 px-5 py-3.5 rounded-full bg-gradient-to-r from-[#FF5A1F] to-[#FF6B35] text-white font-semibold text-sm shadow-lg shadow-orange-900/25 hover:shadow-orange-900/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300',
+      'group flex items-center gap-3 px-6 py-3.5 rounded-full bg-gradient-to-r from-[#FF5A1F] via-[#FF6B35] to-[#FF5A1F] bg-[length:200%_100%] text-white font-bold text-sm shadow-[0_8px_32px_rgba(255,90,31,0.4)] hover:shadow-[0_12px_40px_rgba(255,90,31,0.55)] hover:scale-[1.03] active:scale-[0.97] transition-all duration-300',
     active:
       'bg-white/10 backdrop-blur-2xl border border-white/20 shadow-2xl shadow-black/20 text-white',
     hint: 'text-[11px] text-white/50 font-medium tracking-wide',
@@ -45,6 +45,24 @@ const VARIANTS = {
       'bg-white border border-gray-200 shadow-lg text-gray-900',
     hint: null,
     error: 'text-red-600',
+  },
+  hero: {
+    surface: 'light',
+    idle:
+      'group inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-gradient-to-r from-[#FF5A1F] to-[#FF6B35] text-white font-semibold text-sm shadow-md shadow-orange-200 hover:brightness-105 active:scale-[0.98] transition-all duration-200',
+    active:
+      'bg-white border border-slate-200 shadow-lg text-gray-900 rounded-2xl w-full',
+    hint: null,
+    error: 'text-red-600',
+  },
+  phone: {
+    surface: 'light',
+    idle:
+      'group flex items-center justify-center gap-2.5 w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#FF5A1F] to-[#FF6B35] text-white font-semibold text-sm shadow-[0_4px_16px_rgba(255,90,31,0.35)] hover:brightness-105 active:scale-[0.98] transition-all',
+    active:
+      'w-full bg-white border border-slate-200 shadow-md text-gray-900 rounded-2xl px-3',
+    hint: null,
+    error: 'text-red-600 text-[10px]',
   },
 }
 
@@ -159,7 +177,7 @@ export default function VoiceAgent({ variant = 'cta', className = '', label = 'T
   const showSession = isLoading || isConnected
 
   return (
-    <div className={`inline-flex flex-col items-center gap-2 ${className}`}>
+    <div className={`flex flex-col items-center gap-1.5 ${variant === 'phone' ? 'w-full' : 'inline-flex'} ${className}`}>
       {!showSession ? (
         <button type="button" onClick={connectToRoom} className={v.idle} aria-label={label}>
           {(variant === 'fab' || variant === 'cta') && (
@@ -167,14 +185,16 @@ export default function VoiceAgent({ variant = 'cta', className = '', label = 'T
               <Mic className="w-4 h-4" />
             </span>
           )}
-          {variant === 'primary' && <Mic className="w-4 h-4" />}
+          {(variant === 'primary' || variant === 'hero' || variant === 'phone') && (
+            <Mic className="w-4 h-4 flex-shrink-0" />
+          )}
           <span>{label}</span>
         </button>
       ) : (
         <div
           className={`
-            flex items-center gap-3 rounded-full transition-all duration-500 ease-out
-            px-4 py-2.5 sm:px-5 min-w-[200px] sm:min-w-[240px]
+            flex items-center gap-3 transition-all duration-500 ease-out
+            ${variant === 'phone' ? 'w-full rounded-2xl px-3 py-2.5' : 'rounded-full px-4 py-2.5 sm:px-5 min-w-[200px] sm:min-w-[240px]'}
             ${v.active}
           `}
           role="status"

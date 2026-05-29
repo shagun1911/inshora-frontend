@@ -1,14 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Phone, FileText, Shield } from 'lucide-react'
-
-const serviceLinks = [
-  { label: 'Auto Insurance', to: '/services' },
-  { label: 'Home Insurance', to: '/services' },
-  { label: 'Renters Insurance', to: '/services' },
-  { label: 'Flood Insurance', to: '/services' },
-  { label: 'Life Insurance', to: '/services' },
-  { label: 'Business Insurance', to: '/services' },
-]
+import { FOOTER_SERVICES } from '../data/servicePages'
 
 const locationLinks = [
   { label: 'Sugar Land, TX', to: '/locations' },
@@ -91,14 +83,15 @@ export default function Footer() {
               <li><Link to="/quote" className="hover:text-white transition">Get a Quote</Link></li>
               <li><Link to="/contact" className="hover:text-white transition">Contact Us</Link></li>
               <li><Link to="/blog" className="hover:text-white transition">Blog</Link></li>
+              <li><Link to="/best-insurance-company-usa" className="hover:text-white transition">Best Insurance in USA</Link></li>
             </ul>
           </div>
 
           <div>
             <h2 className="font-semibold mb-4 text-sm uppercase tracking-wide text-gray-300">Services</h2>
             <ul className="space-y-2 text-gray-400">
-              {serviceLinks.map((item) => (
-                <li key={item.label}>
+              {FOOTER_SERVICES.map((item) => (
+                <li key={item.to}>
                   <Link to={item.to} className="hover:text-white transition">{item.label}</Link>
                 </li>
               ))}
