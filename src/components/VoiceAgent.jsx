@@ -1,6 +1,36 @@
 import { useState, useEffect, useRef } from 'react'
 import { Room, Track, RoomEvent } from 'livekit-client'
 import { Mic, MicOff, PhoneOff, Loader2 } from 'lucide-react'
+import { getApiBase } from '../utils/apiBase'
+
+function attachRemoteAudio(track, container, attachedSids) {
+  if (track.kind !== Track.Kind.Audio || !container || !attachedSids) return
+  const sid = track.sid
+  if (!sid || attachedSids.has(sid)) return
+
+  track.detach().forEach((element) => element.remove())
+
+  const element = track.attach()
+  element.autoplay = true
+  element.playsInline = true
+  element.setAttribute('playsinline', 'true')
+  container.appendChild(element)
+  attachedSids.add(sid)
+
+  element.play().catch((err) => {
+    console.warn('Sarah audio autoplay blocked — user may need to interact again:', err)
+  })
+}
+
+function attachExistingRemoteAudio(room, container, attachedSids) {
+  room.remoteParticipants.forEach((participant) => {
+    participant.trackPublications.forEach((pub) => {
+      if (pub.track && pub.kind === Track.Kind.Audio) {
+        attachRemoteAudio(pub.track, container, attachedSids)
+      }
+    })
+  })
+}
 
 function Waveform({ muted, light }) {
   if (muted) return null
@@ -73,6 +103,7 @@ export default function VoiceAgent({ variant = 'cta', className = '', label = 'T
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
   const remoteAudioContainerRef = useRef(null)
+  const attachedTrackSidsRef = useRef(new Set())
 
   const v = VARIANTS[variant] || VARIANTS.cta
   const isLight = v.surface === 'light'
@@ -85,7 +116,7 @@ export default function VoiceAgent({ variant = 'cta', className = '', label = 'T
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       stream.getTracks().forEach((track) => track.stop())
 
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:5001'
+      const backendUrl = getApiBase() || 'http://127.0.0.1:5001'
       const response = await fetch(`${backendUrl}/create_room`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -97,27 +128,41 @@ export default function VoiceAgent({ variant = 'cta', className = '', label = 'T
       if (!response.ok) throw new Error('Failed to connect. Please try again.')
 
       const data = await response.json()
-      const newRoom = new Room()
+      if (!data.success || !data.token || !data.url) {
+        throw new Error(data.error || 'Failed to connect. Please try again.')
+      }
+
+      const newRoom = new Room({
+        adaptiveStream: true,
+        dynacast: true,
+      })
+      const audioContainer = remoteAudioContainerRef.current
+      const attachedSids = attachedTrackSidsRef.current
+      attachedSids.clear()
+      if (audioContainer) audioContainer.innerHTML = ''
 
       newRoom.on(RoomEvent.TrackSubscribed, (track) => {
-        if (track.kind === Track.Kind.Audio) {
-          const element = track.attach()
-          element.autoplay = true
-          element.style.display = 'none'
-          remoteAudioContainerRef.current?.appendChild(element)
-        }
+        attachRemoteAudio(track, audioContainer, attachedSids)
       })
 
       newRoom.on(RoomEvent.TrackUnsubscribed, (track) => {
+        if (track.sid) attachedSids.delete(track.sid)
         track.detach().forEach((element) => element.remove())
       })
 
-      newRoom.on(RoomEvent.ParticipantDisconnected, () => {
+      newRoom.on(RoomEvent.Disconnected, () => {
+        attachedSids.clear()
         setIsConnected(false)
       })
 
       await newRoom.connect(data.url, data.token)
+      try {
+        await newRoom.startAudio()
+      } catch (audioErr) {
+        console.warn('Could not start Sarah audio playback:', audioErr)
+      }
       await newRoom.localParticipant.setMicrophoneEnabled(true)
+      attachExistingRemoteAudio(newRoom, audioContainer, attachedSids)
 
       setRoom(newRoom)
       setIsConnected(true)
@@ -138,6 +183,7 @@ export default function VoiceAgent({ variant = 'cta', className = '', label = 'T
   const disconnectFromRoom = async () => {
     if (room) {
       await room.disconnect()
+      attachedTrackSidsRef.current.clear()
       if (remoteAudioContainerRef.current) {
         remoteAudioContainerRef.current.innerHTML = ''
       }
@@ -268,7 +314,7 @@ export default function VoiceAgent({ variant = 'cta', className = '', label = 'T
 
       {v.hint && !showSession && !error && <p className={v.hint}>AI voice assistant</p>}
 
-      <div ref={remoteAudioContainerRef} className="sr-only" aria-hidden />
+      <div ref={remoteAudioContainerRef} className="fixed w-px h-px opacity-0 pointer-events-none overflow-hidden" aria-hidden />
     </div>
   )
 }
