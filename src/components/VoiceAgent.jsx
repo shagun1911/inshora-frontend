@@ -113,9 +113,6 @@ export default function VoiceAgent({ variant = 'cta', className = '', label = 'T
       setIsLoading(true)
       setError(null)
 
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      stream.getTracks().forEach((track) => track.stop())
-
       const backendUrl = getApiBase() || 'http://127.0.0.1:5001'
       const response = await fetch(`${backendUrl}/create_room`, {
         method: 'POST',
