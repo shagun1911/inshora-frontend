@@ -156,12 +156,17 @@ export default function VoiceAgent({ variant = 'cta', className = '', label = 'T
       })
 
       await newRoom.connect(data.url, data.token)
+      await newRoom.localParticipant.setMicrophoneEnabled(true, {
+        preConnectBuffer: true,
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+      })
       try {
         await newRoom.startAudio()
       } catch (audioErr) {
         console.warn('Could not start Sarah audio playback:', audioErr)
       }
-      await newRoom.localParticipant.setMicrophoneEnabled(true)
       attachExistingRemoteAudio(newRoom, audioContainer, attachedSids)
 
       setRoom(newRoom)
