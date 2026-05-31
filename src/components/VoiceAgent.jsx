@@ -3,10 +3,7 @@ import { Room, Track, RoomEvent } from 'livekit-client'
 import { Mic, MicOff, PhoneOff, Loader2 } from 'lucide-react'
 import { getApiBase } from '../utils/apiBase'
 
-const isMobileDevice =
-  typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-
-async function attachRemoteAudio(track, container, attachedSids, room) {
+function attachRemoteAudio(track, container, attachedSids) {
   if (track.kind !== Track.Kind.Audio || !container || !attachedSids) return
   const sid = track.sid
   if (!sid || attachedSids.has(sid)) return
@@ -17,55 +14,22 @@ async function attachRemoteAudio(track, container, attachedSids, room) {
   element.autoplay = true
   element.playsInline = true
   element.setAttribute('playsinline', 'true')
-  element.setAttribute('webkit-playsinline', 'true')
-  element.volume = 1
-  element.muted = false
   container.appendChild(element)
   attachedSids.add(sid)
 
-  if (typeof track.setVolume === 'function') {
-    track.setVolume(1)
-  }
-
-  try {
-    await element.play()
-  } catch (err) {
+  element.play().catch((err) => {
     console.warn('Sarah audio autoplay blocked — user may need to interact again:', err)
-  }
-
-  if (room) {
-    try {
-      await room.startAudio()
-    } catch (err) {
-      console.warn('Could not route Sarah audio to speaker:', err)
-    }
-  }
+  })
 }
 
 function attachExistingRemoteAudio(room, container, attachedSids) {
   room.remoteParticipants.forEach((participant) => {
     participant.trackPublications.forEach((pub) => {
       if (pub.track && pub.kind === Track.Kind.Audio) {
-        attachRemoteAudio(pub.track, container, attachedSids, room)
+        attachRemoteAudio(pub.track, container, attachedSids)
       }
     })
   })
-}
-
-async function boostSpeakerPlayback(room) {
-  if (!room) return
-  try {
-    await room.startAudio()
-  } catch {
-    // ignore — will retry below
-  }
-  if (!isMobileDevice) return
-  await new Promise((resolve) => setTimeout(resolve, 300))
-  try {
-    await room.startAudio()
-  } catch {
-    // best-effort iOS routing workaround
-  }
 }
 
 function Waveform({ muted, light }) {
@@ -168,7 +132,6 @@ export default function VoiceAgent({ variant = 'cta', className = '', label = 'T
       const newRoom = new Room({
         adaptiveStream: true,
         dynacast: true,
-        webAudioMix: true,
       })
       const audioContainer = remoteAudioContainerRef.current
       const attachedSids = attachedTrackSidsRef.current
@@ -176,7 +139,7 @@ export default function VoiceAgent({ variant = 'cta', className = '', label = 'T
       if (audioContainer) audioContainer.innerHTML = ''
 
       newRoom.on(RoomEvent.TrackSubscribed, (track) => {
-        attachRemoteAudio(track, audioContainer, attachedSids, newRoom)
+        attachRemoteAudio(track, audioContainer, attachedSids)
       })
 
       newRoom.on(RoomEvent.TrackUnsubscribed, (track) => {
@@ -195,9 +158,12 @@ export default function VoiceAgent({ variant = 'cta', className = '', label = 'T
         echoCancellation: true,
         noiseSuppression: true,
         autoGainControl: true,
-        ...(isMobileDevice ? { voiceIsolation: false } : {}),
       })
-      await boostSpeakerPlayback(newRoom)
+      try {
+        await newRoom.startAudio()
+      } catch (audioErr) {
+        console.warn('Could not start Sarah audio playback:', audioErr)
+      }
       attachExistingRemoteAudio(newRoom, audioContainer, attachedSids)
 
       setRoom(newRoom)
@@ -350,12 +316,7 @@ export default function VoiceAgent({ variant = 'cta', className = '', label = 'T
 
       {v.hint && !showSession && !error && <p className={v.hint}>AI voice assistant</p>}
 
-      <div
-        ref={remoteAudioContainerRef}
-        className="fixed left-0 top-0 h-0 w-0 overflow-hidden"
-        style={{ opacity: 0, pointerEvents: 'none' }}
-        aria-hidden
-      />
+      <div ref={remoteAudioContainerRef} className="fixed w-px h-px opacity-0 pointer-events-none overflow-hidden" aria-hidden />
     </div>
   )
 }
