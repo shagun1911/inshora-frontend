@@ -6,6 +6,7 @@ export default function HomepageBlogSection() {
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
   const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:5001'
+  const defaultBlogCover = '/blog-default-cover.svg'
 
   useEffect(() => {
     fetch(`${backendUrl}/api/blog?page=1&per_page=3`)
@@ -64,6 +65,10 @@ export default function HomepageBlogSection() {
                       src={post.image_url.startsWith('http') ? post.image_url : `${backendUrl}${post.image_url}`}
                       alt=""
                       className="h-48 w-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null
+                        e.currentTarget.src = defaultBlogCover
+                      }}
                     />
                   ) : (
                     <div className="h-48 bg-[#0B1F8F] flex items-center justify-center">

@@ -20,6 +20,7 @@ export default function Blog() {
   const [totalPages, setTotalPages] = useState(1)
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:5001'
+  const defaultBlogCover = '/blog-default-cover.svg'
 
   useEffect(() => {
     fetchBlogs(currentPage)
@@ -123,6 +124,10 @@ export default function Blog() {
                           src={blog.image_url.startsWith('http') ? blog.image_url : `${backendUrl}${blog.image_url}`}
                           alt=""
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null
+                            e.currentTarget.src = defaultBlogCover
+                          }}
                         />
                       ) : (
                         <div className="h-full flex items-center justify-center text-blue-200 text-sm">Inshora Group</div>

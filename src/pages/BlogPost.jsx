@@ -11,6 +11,7 @@ export default function BlogPost() {
   const [error, setError] = useState(null)
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:5001'
+  const defaultBlogCover = '/blog-default-cover.svg'
 
   useEffect(() => {
     fetchBlog()
@@ -94,6 +95,10 @@ export default function BlogPost() {
             src={blog.image_url.startsWith('http') ? blog.image_url : `${backendUrl}${blog.image_url}`}
             alt={blog.title}
             className="w-full h-full object-cover"
+            onError={(e) => {
+              e.currentTarget.onerror = null
+              e.currentTarget.src = defaultBlogCover
+            }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
         </div>
